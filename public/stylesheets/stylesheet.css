@@ -74,3 +74,82 @@ a {
   margin: 0;
 }
 
+#footnotes_debug {
+    background-color: pink;
+    padding-bottom: 5px;
+}
+
+
+
+.search {
+    text-align: center;
+}
+
+.search input {
+    width: 50%
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    margin: 0 0 10px 0;
+    padding: 4px 6px 6px;
+    list-style: none;
+    background-color: #eee;
+}
+
+
+.translation .content {
+    padding: 25px 0 0 0;
+}
+
+.translation .content,
+.translation .content input {
+    font-size: 23px;
+    font-family: verdana, arial, helvetica, sans-serif;
+}
+
+.token {
+    float: left;
+}
+
+.tags {
+    float: right;
+}
+
+input {
+    border: 1px solid #ccc;
+}
+
+.content input {
+    width: 100%;
+}
+
+.hidden {
+    display: none;
+}
+
+.edit {
+    margin: 0 0 0 4px;
+}
+
+ul.locales {
+    margin: 0;
+    padding: 0;
+}
+
+ul.locales li {
+    display: inline;
+    padding: 6px 12px;
+}
+
+ul.locales li form {
+    display:inline;
+}
+
+
+.search {
+    padding: 20px 0 0 0;
+}

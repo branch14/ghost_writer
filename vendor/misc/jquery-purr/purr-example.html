@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	
+<head>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<title>Scroll Follow Simple Example</title>
+	
+	<script type="text/javascript" src="./purr-example/jquery.js"></script>
+   	<script type="text/javascript" src="./purr-example/jquery.purr.js"></script>
+	
+   	<script type="text/javascript">
+   		$( document ).ready( function ()
+			{
+				$( '.show-example' ).click( function () 
+					{
+						var notice = '<div class="notice">'
+								  + '<div class="notice-body">' 
+									  + '<img src="./purr-example/info.png" alt="" />'
+									  + '<h3>Purr Example</h3>'
+									  + '<p>This a normal Purr. It will fade out on its own.</p>'
+								  + '</div>'
+								  + '<div class="notice-bottom">'
+								  + '</div>'
+							  + '</div>';
+							  
+						$( notice ).purr(
+							{
+								usingTransparentPNG: true
+							}
+						);
+						
+						return false;
+					}
+				);
+				
+				$( '.show-sticky' ).click( function () 
+					{
+						var notice = '<div class="notice">'
+								  + '<div class="notice-body">' 
+									  + '<img src="./purr-example/info.png" alt="" />'
+									  + '<h3>"Sticky" Purr Example</h3>'
+									  + '<p>This a "sticky" Purr. It will not fade out on its own. You must close it manually.</p>'
+								  + '</div>'
+								  + '<div class="notice-bottom">'
+								  + '</div>'
+							  + '</div>';
+							  
+						$( notice ).purr(
+							{
+								usingTransparentPNG: true,
+								isSticky: true
+							}
+						);
+						
+						return false;
+					}
+				);
+			}
+		);
+   	</script>
+	
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: Georgia;
+			font-size: 0.9em;
+			line-height: 1.4em;
+		}
+		
+		#example {
+			position: relative;
+			width: 500px;
+			padding: 20px;
+		}
+		
+		p {
+			margin: 7px 0 0 0;
+		}
+		
+		#purr-container {
+			position: fixed;
+			top: 0;
+			right: 0;
+		}
+		
+		.notice {
+			position: relative;
+			width: 324px;
+		}
+			.notice .close	{position: absolute; top: 12px; right: 12px; display: block; width: 18px; height: 17px; text-indent: -9999px; background: url(./purr-example/purrClose.png) no-repeat 0 10px;}
+		
+		.notice-body {
+			min-height: 50px;
+			padding: 22px 22px 0 22px;
+			background: url(./purr-example/purrTop.png) no-repeat left top;
+			color: #f9f9f9;
+		}
+			.notice-body img	{width: 50px; margin: 0 10px 0 0; float: left;}
+			.notice-body h3	{margin: 0; font-size: 1.1em;}
+			.notice-body p		{margin: 5px 0 0 60px; font-size: 0.8em; line-height: 1.4em;}
+		
+		.notice-bottom {
+			height: 22px;
+			background: url(./purr-example/purrBottom.png) no-repeat left top;
+		}
+	</style>
+</head>
+
+<body>
+		
+	<div id="example">
+	
+		<p>
+			This page features two examples: a regular Purr and a "sticky" Purr. Clicking the links
+			below will present a new Purr each time. Notice the relationship between the sticky and
+			regular Purrs. Only the top non-sticky Purr in the list is removed at a time.
+		</p>
+		
+		<p>
+			These notices also feature the <em>usingTransparentPNG</em> parameter. If you are viewing
+			this page in IE7, you aren't seeing the fading animations.
+		</p>
+		
+		<p>
+			The information icon is courtesy of 
+			<a href="http://mouserunner.com/Spheres_ColoCons1_Free_Icons.html">MouseRunner.com</a>.
+		</p>
+		
+		<ul>
+			<li><a class="show-example" href="#show">Regular</a></li>
+			<li><a class="show-sticky" href="#show">Sticky</a></li>
+		</ul>
+	</div><!--end #example-->
+</body>
+</html>

@@ -1,0 +1,13 @@
+- id = "translation-#{translation.id}" 
+%li.translation{ :id => id }
+  .token=translation.raw
+  .tags
+    -if translation.tags.size > 0
+      -translation.tags.each do |tag|
+        -#=link_to tag.name, { :action => :tag, :id => tag.name }, :class => 'css_class'
+        =tag.name
+    -else
+      %i=t(:no_tags)
+    =text_field_tag "#{id}-tags", translation.tag_list, :class => 'hidden'
+    %span.edit=link_to_function t(:edit), "editTagList('#{id}')"
+  .content=best_in_place translation, :content   

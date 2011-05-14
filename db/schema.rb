@@ -10,13 +10,64 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110211123618) do
+ActiveRecord::Schema.define(:version => 20110507135548) do
 
-  create_table "posts", :force => true do |t|
+  create_table "locales", :force => true do |t|
+    t.string   "code"
     t.string   "title"
-    t.text     "body"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "locales", ["code", "project_id"], :name => "index_locales_on_code_and_project_id"
+
+  create_table "projects", :force => true do |t|
+    t.string   "title"
+    t.string   "permalink"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "projects", ["permalink"], :name => "index_projects_on_permalink"
+
+  create_table "taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context"
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "tags", :force => true do |t|
+    t.string "name"
+  end
+
+  create_table "tokens", :force => true do |t|
+    t.string   "raw"
+    t.string   "hashed"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tokens", ["hashed", "project_id"], :name => "index_tokens_on_hashed_and_project_id"
+  add_index "tokens", ["raw", "project_id"], :name => "index_tokens_on_raw_and_project_id"
+
+  create_table "translations", :force => true do |t|
+    t.string   "content"
+    t.integer  "hits"
+    t.integer  "token_id"
+    t.integer  "locale_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "translations", ["token_id", "locale_id"], :name => "index_translations_on_token_id_and_locale_id"
 
 end

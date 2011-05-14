@@ -1,0 +1,24 @@
+-#%p.notice= notice
+
+%p
+  %b=t('.title')
+  =@project.title
+
+%p
+  %b=t('.locale_count')
+  =@project.locales.count
+
+=form_for @project do |pf|
+  =pf.fields_for :locales, @project.locales.build do |lf|
+    %label=t('.add_locale')
+    =lf.collection_select :code, @project.remaining_locales, :first, :last, :include_blank => t(:prompt)
+  =pf.submit  
+
+%ul
+  -@project.locales.each do |locale|
+    -unless locale.new_record?
+      %li=link_to locale.title, project_locale_path(@project, locale)
+
+=link_to t(:edit), edit_resource_path(@project)
+|
+=link_to t(:back), collection_path

@@ -5,12 +5,18 @@ gem 'rails', '3.0.5'
 # gems in alphabetic order
 gem 'exception_notification_rails3', '1.2.0', :require => 'exception_notifier'
 gem 'formtastic', '1.2.3'
-gem 'haml', '3.0.25'
+gem 'haml', '3.1.1'
 gem 'inherited_resources', '1.2.1'
+gem 'kaminari'
+gem 'acts-as-taggable-on'
+gem 'best_in_place'
+gem 'compass'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
+gem 'rails-footnotes', '>= 3.7', :group => :development
+
 group :development, :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'yard'

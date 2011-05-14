@@ -1,0 +1,42 @@
+-content_for :scripts do
+  =javascript_include_tag 'jquery.purr'
+  =javascript_include_tag 'best_in_place' 
+  :javascript
+    $(document).ready(function() { $(".best_in_place").best_in_place() });
+  =javascript_include_tag 'jquery.delayed_observer'
+  :javascript
+    $(document).ready(function() {
+      $('#filter').delayedObserver(0.5, function(value, object) {
+        var theSearchString = $("#filter").val();
+        var localeId = $("#locale_id").val();
+        var projectId = $("#project_id").val();
+        var url = '/translations';
+        $.get(url, { locale_id: localeId,
+                     filter: theSearchString }, function(data) {
+          $('#translations').html(data);
+          $(".best_in_place").best_in_place();
+        });
+      });
+    });
+
+
+%ul.locales
+  -@project.locales.each do |locale|
+    -if locale == @locale
+      %li=locale.title
+    -else
+      %li=link_to locale.title, project_locale_path(@project, locale)
+  %li
+    =form_for @project do |pf|
+      =pf.fields_for :locales, @project.locales.build do |lf|
+        %label=t('.add_locale')
+        =lf.collection_select :code, @project.remaining_locales,
+          :first, :last, :include_blank => t(:prompt)
+      =pf.submit
+
+
+.search
+  =hidden_field_tag :locale_id, @locale.id
+  %input#filter{ :type => 'search', :placeholder => 'Find...' }
+
+%ul#translations=render :partial => 'translation', :collection => @locale.translations
