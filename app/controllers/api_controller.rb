@@ -1,25 +1,58 @@
 class ApiController < ApplicationController
 
+  before_filter :set_project!
+
   def single_get
-    project = Project.find(params[:project_id])
-    send_data sample, :type => 'application/x-yaml', :filename => 'translations.yml'
+    send_yaml!
   end
 
   def single_post
-    project = Project.find(params[:project_id])
-    hits_json, miss_json = params[:hits], params[:miss]
-    send_data sample, :type => 'application/x-yaml', :filename => 'translations.yml'
+    #hits, miss = JSON.parse(params[:hits]), JSON.parse(params[:miss])
+    #logger.debug miss.to_yaml
+    @missed = JSON.parse(params[:miss])
+    handle_missed!
+    send_yaml!
   end
 
   def simple
-    project = Project.find(params[:project_id])
-    token   = project.tokens.find_or_create_by_raw(params[:token_raw])
-    locale  = project.locales.find_by_code(params[:locale_code])
+    token   = @project.tokens.find_or_create_by_raw(params[:token_raw])
+    locale  = @project.locales.find_by_code(params[:locale_code])
     translation = token.translations.find_by_locale_id(locale.id)
     render :text => translation.content || token.raw, :content_type => 'text/plain'
   end
  
   protected
+
+  def handle_missed!
+    puts @missed.to_yaml
+    @missed.each do |key, val|
+      token = @project.tokens.where(:raw => key).first
+      if token.nil?
+        token = @project.tokens.create(:raw => key)
+        puts "created token for #{key}"
+        token.translations.each do |translation|
+          puts "adjusting translation for #{translation.locale.code}"
+          attrs = { :hits => val['count'][translation.locale.code] }
+          content = val['default'][translation.locale.code]
+          attrs[:content] = content unless content.nil?
+          puts "content: #{attrs[:content]}"
+          puts "hits:    #{attrs[:hits]}"
+          puts "attrs:   #{attrs.inspect}"
+          translation.update_attributes attrs
+        end
+      end
+    end
+  end
+
+  def set_project!
+    @project = Project.where(:id => params[:project_id]).
+      includes(:locales, :tokens => :translations ).first
+  end
+
+  def send_yaml!
+    send_data @project.aggregated_translations.to_yaml,
+      :type => 'application/x-yaml', :filename => 'translations.yml'
+  end
 
   def sample
     { 'en' => { 'this' => { 'is' => { 'a' => { 'test' => "Hello World" }}}}}.to_yaml

@@ -19,10 +19,12 @@ class Locale < ActiveRecord::Base
   #  code
   #end
 
-  def self.available
-    @available ||= File.open(FILE) { |yf| YAML::load(yf) }.sort
-    logger.debug @available.inspect
-    @available
+  class << self
+
+    def available
+      @available ||= File.open(FILE) { |yf| YAML::load(yf) }
+    end
+
   end
 
   private

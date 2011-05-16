@@ -18,4 +18,20 @@ class Project < ActiveRecord::Base
     Locale.available.reject { |key, value| codes.include? key }
   end
 
+  def aggregated_translations
+    locales.inject({}) do |result, locale|
+      tokens.inject(result) do |provis, token|
+        translation = token.translations.where(:locale_id => locale.id).first
+        provis.deep_merge nesting(locale.code, token.raw, translation.content)
+      end
+    end
+  end
+
+  private
+
+  def nesting(locale, token, translation)
+    keys = (token.split('.').reverse << locale)
+    keys.inject(translation) { |result, key| { key => result } }
+  end
+
 end

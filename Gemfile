@@ -10,7 +10,7 @@ gem 'inherited_resources', '1.2.1'
 gem 'kaminari'
 gem 'acts-as-taggable-on'
 gem 'best_in_place'
-gem 'compass'
+gem 'delayed_job'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
@@ -26,15 +26,18 @@ group :development, :test do
   gem 'spork', "0.9.0.rc3"
   gem 'guard-rspec'
   gem 'guard-spork'
+  gem 'guard-bundler'
+  gem 'guard-compass'
   gem 'factory_girl_rails'
+  gem 'compass'
 
 #  Below an ideaf how to enable operating system dependant gems.
 #  Sadly it does cause errors on deployment.
 #  if RUBY_PLATFORM =~ /-*darwin.*/
 #    gem 'growl'
 #  end
-#  if RUBY_PLATFORM =~ /-*linux.*/
-#    gem 'libnotify'
-#  end
+  if RUBY_PLATFORM =~ /-*linux.*/
+    gem 'libnotify'
+  end
 
 end

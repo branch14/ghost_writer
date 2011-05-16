@@ -5,7 +5,7 @@ class LocalesController < InheritedResources::Base
   private
 
   def resource 
-    @locale ||= Locale.where(:id => params[:id]).includes(:translations).first
+    @locale ||= Locale.where(:id => params[:id]).includes(:translations => :token).first
   end
 
 end

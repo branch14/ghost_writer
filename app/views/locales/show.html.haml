@@ -30,7 +30,7 @@
     =form_for @project do |pf|
       =pf.fields_for :locales, @project.locales.build do |lf|
         %label=t('.add_locale')
-        =lf.collection_select :code, @project.remaining_locales,
+        =lf.collection_select :code, @project.remaining_locales.sort,
           :first, :last, :include_blank => t(:prompt)
       =pf.submit
 

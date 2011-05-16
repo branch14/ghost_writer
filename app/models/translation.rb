@@ -8,8 +8,16 @@ class Translation < ActiveRecord::Base
   delegate :raw, :to => :token
 
   validates :locale, :presence => true
-  validates :token, :presence => true
+  validates :token, :presence => true, :unless => :new_record?
 
-  acts_as_taggable
+  #acts_as_taggable
+
+  before_validation :prepop_content!, :on => :create, :unless => :content?
+
+  private
+
+  def prepop_content!
+    self.content = raw
+  end
 
 end
