@@ -48,7 +48,7 @@ ProjectZero::Application.configure do
   config.active_support.deprecation = :notify
 
   config.middleware.use ExceptionNotifier,
-      :email_prefix => "[ProjectZero] ",
-      :sender_address => %{"notifier" <panter@mailantor.com>},
-      :exception_recipients => %w(panter@mailinator.com)
+      :email_prefix => "[GhostWriter] ",
+      :sender_address => %{"notifier" <pho@panter.ch>},
+      :exception_recipients => %w(pho@panter.ch)
 end

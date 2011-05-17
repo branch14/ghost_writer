@@ -99,6 +99,7 @@ GEM
     inherited_resources (1.2.1)
       has_scope (~> 0.5.0)
       responders (~> 0.6.0)
+    json (1.5.1)
     json_pure (1.5.1)
     kaminari (0.12.4)
       rails (>= 3.0.0)
@@ -199,6 +200,7 @@ DEPENDENCIES
   guard-spork
   haml (= 3.1.1)
   inherited_resources (= 1.2.1)
+  json
   kaminari
   libnotify
   mysql
