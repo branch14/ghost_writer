@@ -24,7 +24,7 @@ class ApiController < ApplicationController
   protected
 
   def handle_missed!
-    puts @missed.to_yaml
+    File.open(File.join(Rails.root, 'public', "#{Time.now.to_i}.yml"), 'w') { |f| f.puts @missed.to_yaml }
     @missed.each do |key, val|
       token = @project.tokens.where(:raw => key).first
       if token.nil?
@@ -33,7 +33,8 @@ class ApiController < ApplicationController
         token.translations.each do |translation|
           puts "adjusting translation for #{translation.locale.code}"
           attrs = { :hits => val['count'][translation.locale.code] }
-          content = val['default'][translation.locale.code]
+          content = val['default'][translation.locale.code] unless val['default'].nil?
+          content = val[:default][translation.locale.code] unless val[:default].nil?
           attrs[:content] = content unless content.nil?
           puts "content: #{attrs[:content]}"
           puts "hits:    #{attrs[:hits]}"
