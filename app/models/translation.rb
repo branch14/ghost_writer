@@ -30,7 +30,7 @@ class Translation < ActiveRecord::Base
   end
 
   def nilify_blank_content!
-    self.content = nil of content.blank?
+    self.content = nil if content.blank?
   end
 
 end
