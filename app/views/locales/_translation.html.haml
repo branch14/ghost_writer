@@ -1,5 +1,5 @@
 - id = "translation-#{translation.id}" 
-%li.translation{ :id => id }
+%li.translation{ :id => id, :class => "#{translation.active? ? 'active' : 'inactive'}" }
   .token=translation.raw
   -# .tags
   -#   -if translation.tags.size > 0

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110507135548) do
+ActiveRecord::Schema.define(:version => 20110518081444) do
 
   create_table "locales", :force => true do |t|
     t.string   "code"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(:version => 20110507135548) do
     t.integer  "locale_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "active",     :default => true
   end
 
   add_index "translations", ["token_id", "locale_id"], :name => "index_translations_on_token_id_and_locale_id"

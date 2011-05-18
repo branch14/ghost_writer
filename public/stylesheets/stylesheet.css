@@ -153,3 +153,7 @@ ul.locales li form {
 .search {
     padding: 20px 0 0 0;
 }
+
+.inactive {
+    color: #aaa;
+}

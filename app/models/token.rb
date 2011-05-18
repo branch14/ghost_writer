@@ -37,7 +37,7 @@ class Token < ActiveRecord::Base
 
   def prepop_translations!
     missing_translations.map do |locale|
-      translations.build :locale => locale
+      translations.create :locale => locale
     end
   end
 

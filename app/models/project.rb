@@ -22,7 +22,11 @@ class Project < ActiveRecord::Base
     locales.inject({}) do |result, locale|
       tokens.inject(result) do |provis, token|
         translation = token.translations.where(:locale_id => locale.id).first
-        provis.deep_merge nesting(locale.code, token.raw, translation.content)
+        if !translation.nil? and translation.active?
+          provis.deep_merge nesting(locale.code, token.raw, translation.content)
+        else
+          provis
+        end
       end
     end
   end
