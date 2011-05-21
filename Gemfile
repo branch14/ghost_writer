@@ -13,6 +13,7 @@ gem 'inherited_resources', '1.2.1'
 gem 'json'
 gem 'kaminari'
 gem 'mysql'
+gem 'devise'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
@@ -22,18 +23,22 @@ group :development, :test do
   gem 'yard'
   gem 'rspec-rails'
   gem 'capybara'
+  gem 'steak'
   gem 'spork', "0.9.0.rc3"
   gem 'guard-rspec'
   gem 'guard-spork'
   gem 'guard-bundler'
   gem 'guard-compass'
+  gem 'guard-passenger'
+  gem 'guard-mozrepl'
+  gem 'passenger'
   gem 'factory_girl_rails'
   gem 'compass'
 
   gem 'capistrano'
   gem 'capistrano-ext'
 
-  gem 'rails-footnotes', '>= 3.7'
+  # gem 'rails-footnotes', '>= 3.7'
 
 #  Below an ideaf how to enable operating system dependant gems.
 #  Sadly it does cause errors on deployment.

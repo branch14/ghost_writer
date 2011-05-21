@@ -16,3 +16,5 @@ en:
       add_locale: Add locale
 
   no_tags: no tags
+  login: login
+  logout: logout

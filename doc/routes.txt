@@ -1,0 +1,27 @@
+(in /home/phil/src/ghost_writer)
+    project_locales GET    /projects/:project_id/locales(.:format)            {:action=>"index", :controller=>"locales"}
+                    POST   /projects/:project_id/locales(.:format)            {:action=>"create", :controller=>"locales"}
+ new_project_locale GET    /projects/:project_id/locales/new(.:format)        {:action=>"new", :controller=>"locales"}
+edit_project_locale GET    /projects/:project_id/locales/:id/edit(.:format)   {:action=>"edit", :controller=>"locales"}
+     project_locale GET    /projects/:project_id/locales/:id(.:format)        {:action=>"show", :controller=>"locales"}
+                    PUT    /projects/:project_id/locales/:id(.:format)        {:action=>"update", :controller=>"locales"}
+                    DELETE /projects/:project_id/locales/:id(.:format)        {:action=>"destroy", :controller=>"locales"}
+           projects GET    /projects(.:format)                                {:action=>"index", :controller=>"projects"}
+                    POST   /projects(.:format)                                {:action=>"create", :controller=>"projects"}
+        new_project GET    /projects/new(.:format)                            {:action=>"new", :controller=>"projects"}
+       edit_project GET    /projects/:id/edit(.:format)                       {:action=>"edit", :controller=>"projects"}
+            project GET    /projects/:id(.:format)                            {:action=>"show", :controller=>"projects"}
+                    PUT    /projects/:id(.:format)                            {:action=>"update", :controller=>"projects"}
+                    DELETE /projects/:id(.:format)                            {:action=>"destroy", :controller=>"projects"}
+       translations GET    /translations(.:format)                            {:action=>"index", :controller=>"translations"}
+                    POST   /translations(.:format)                            {:action=>"create", :controller=>"translations"}
+    new_translation GET    /translations/new(.:format)                        {:action=>"new", :controller=>"translations"}
+   edit_translation GET    /translations/:id/edit(.:format)                   {:action=>"edit", :controller=>"translations"}
+        translation GET    /translations/:id(.:format)                        {:action=>"show", :controller=>"translations"}
+                    PUT    /translations/:id(.:format)                        {:action=>"update", :controller=>"translations"}
+                    DELETE /translations/:id(.:format)                        {:action=>"destroy", :controller=>"translations"}
+                    GET    /api/:project_id/:locale_code/:token_raw(.:format) {:action=>"simple", :controller=>"api"}
+                    POST   /api/:project_id(.:format)                         {:action=>"single_post", :controller=>"api"}
+                    GET    /api/:project_id(.:format)                         {:action=>"single_get", :controller=>"api"}
+               root        /(.:format)                                        {:action=>"show", :controller=>"locales"}
+     exception_test        /exception_test(.:format)                          {:action=>"error", :controller=>"exception_test"}

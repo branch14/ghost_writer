@@ -31,3 +31,20 @@ guard 'spork' do
   watch(/^config\/initializers\/.*\.rb$/)
   watch(/spec\/spec_helper.rb/)
 end
+
+guard 'mozrepl' do
+  watch(/app\/.+\.(erb|haml)/)  
+  watch(/app\/helpers\/.+\.rb/)
+  watch(/public\/(.+\.(css|js|html))/) { |m| m[1] }
+  watch(/config\/locales\/.+\.yml/)
+end
+
+### or with options...
+# guard 'mozrepl', :host => 'localhost', :port => 4242, :verbose => true do
+#   ...
+
+guard 'passenger' do
+  watch('Gemfile')
+  watch(/^lib\/.*\.rb$/)
+  watch(/^config\/.*\.rb$/)
+end

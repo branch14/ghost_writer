@@ -30,6 +30,7 @@ GEM
     activesupport (3.0.5)
     acts-as-taggable-on (2.0.6)
     arel (2.0.9)
+    bcrypt-ruby (2.1.4)
     best_in_place (0.1.9)
       rails (~> 3.0.0)
     builder (2.1.2)
@@ -60,10 +61,15 @@ GEM
       sass (~> 3.1)
     configuration (1.2.0)
     culerity (0.2.15)
+    daemon_controller (0.2.6)
     daemons (1.1.3)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
+    devise (1.3.4)
+      bcrypt-ruby (~> 2.1.2)
+      orm_adapter (~> 0.0.3)
+      warden (~> 1.0.3)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -72,6 +78,7 @@ GEM
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
       railties (>= 3.0.0)
+    fastthread (1.0.7)
     ffi (0.6.3)
       rake (>= 0.8.7)
     formtastic (1.2.3)
@@ -87,6 +94,9 @@ GEM
     guard-compass (0.0.6)
       compass (>= 0.10.5)
       guard (>= 0.2.1)
+    guard-mozrepl (0.0.3)
+    guard-passenger (0.3.0)
+      guard (~> 0.3)
     guard-rspec (0.1.9)
       guard (>= 0.2.2)
     guard-spork (0.1.4)
@@ -125,6 +135,12 @@ GEM
     nokogiri (1.4.4)
     open_gem (1.4.2)
       launchy (~> 0.3.5)
+    orm_adapter (0.0.5)
+    passenger (3.0.7)
+      daemon_controller (>= 0.2.5)
+      fastthread (>= 1.0.1)
+      rack
+      rake (>= 0.8.1)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -139,8 +155,6 @@ GEM
       activesupport (= 3.0.5)
       bundler (~> 1.0)
       railties (= 3.0.5)
-    rails-footnotes (3.7.2)
-      rails (>= 3.0.0)
     railties (3.0.5)
       actionpack (= 3.0.5)
       activesupport (= 3.0.5)
@@ -172,10 +186,14 @@ GEM
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
+    steak (1.1.0)
+      rspec (>= 1.3)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     tzinfo (0.3.24)
+    warden (1.0.4)
+      rack (>= 1.0)
     xpath (0.1.3)
       nokogiri (~> 1.3)
     yard (0.6.4)
@@ -191,11 +209,14 @@ DEPENDENCIES
   capybara
   compass
   delayed_job
+  devise
   exception_notification_rails3 (= 1.2.0)
   factory_girl_rails
   formtastic (= 1.2.3)
   guard-bundler
   guard-compass
+  guard-mozrepl
+  guard-passenger
   guard-rspec
   guard-spork
   haml (= 3.1.1)
@@ -204,9 +225,10 @@ DEPENDENCIES
   kaminari
   libnotify
   mysql
+  passenger
   rails (= 3.0.5)
-  rails-footnotes (>= 3.7)
   rspec-rails
   spork (= 0.9.0.rc3)
   sqlite3-ruby
+  steak
   yard

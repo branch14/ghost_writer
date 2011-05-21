@@ -4,4 +4,6 @@ class ApplicationController < ActionController::Base
 
   layout proc { |controller| controller.request.xhr? ? false : 'application' }
 
+  before_filter :authenticate_user!
+  
 end
