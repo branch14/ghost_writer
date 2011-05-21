@@ -1,5 +1,7 @@
 ProjectZero::Application.routes.draw do
 
+  resources :assignments
+
   devise_for :users
 
   resources :projects do

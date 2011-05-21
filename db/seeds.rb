@@ -6,12 +6,12 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
 
+user = User.create! :email => 'ghost@example.com'
 
-Project.delete_all
-ghostwriter = Project.create! :title => 'GhostWriter', :permalink => 'ghostwriter'
+ghostwriter = user.projects.create! :title => 'GhostWriter', :permalink => 'ghostwriter'
 
-Locale.delete_all
 english = ghostwriter.locales.create! :code => 'en'
+
 # german  = ghostwriter.locales.create! :code => 'de'
 # 
 # Token.delete_all
