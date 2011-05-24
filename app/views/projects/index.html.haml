@@ -1,0 +1,14 @@
+%h1=t(:my_projects)
+
+%table
+  %tr
+    %th=t('.title')
+    %th
+
+  -@projects.each do |project|
+    %tr
+      %td.title=link_to project.title, project
+      %td=link_to t(:edit), edit_project_path(project)
+
+%br/
+= link_to 'New Project', new_project_path

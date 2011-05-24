@@ -1,5 +1,5 @@
 body {
-  background-color: #4B7399;
+  background: #4B7399 url(../images/ghostwriter_logo.png) no-repeat 10px 4px;
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
 }
@@ -24,7 +24,7 @@ a {
   background-color: #FFF;
   padding: 20px 40px;
   border: solid 1px black;
-  margin-top: 20px;
+  margin-top: 85px;
 }
 
 #flash_notice, #flash_error, #flash_alert {
@@ -157,3 +157,17 @@ ul.locales li form {
 .inactive {
     color: #aaa;
 }
+
+ul.nav li {
+    display: inline;
+} 
+
+.right {
+    text-align: right;
+}
+
+td.title {
+    font-size: 23px;
+    padding: 10px 20px 10px 0px;
+}
+

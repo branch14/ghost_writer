@@ -5,6 +5,8 @@ class Project < ActiveRecord::Base
   has_many :tokens
   has_many :locales
   has_many :translations, :through => :locales
+  has_many :assignments
+  has_many :users, :through => :assignments
 
   accepts_nested_attributes_for :locales
 

@@ -37,6 +37,7 @@ group :development, :test do
 
   gem 'capistrano'
   gem 'capistrano-ext'
+  gem 'ruby-debug'
 
   # gem 'rails-footnotes', '>= 3.7'
 

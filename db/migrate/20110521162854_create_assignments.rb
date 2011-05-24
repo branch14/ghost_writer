@@ -1,8 +1,8 @@
 class CreateAssignments < ActiveRecord::Migration
   def self.up
     create_table :assignments do |t|
-      t.reference :user
-      t.reference :project
+      t.references :user
+      t.references :project
       t.string :role
 
       t.timestamps

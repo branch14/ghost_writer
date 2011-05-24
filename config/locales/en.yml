@@ -9,6 +9,8 @@ en:
       title: Title
       locale_count: Locale count
       add_locale: Add locale
+    index:
+      title: Title
 
   prompt: Select...
   locales:
@@ -18,3 +20,5 @@ en:
   no_tags: no tags
   login: login
   logout: logout
+  new_project: New project
+  my_projects: My projects

@@ -21,8 +21,8 @@ ProjectZero::Application.routes.draw do
   # post '/api/:api_key/:raw_token' =>
   # get '/api/:api_key/:hashed_token' =>
 
-  root :to => 'locales#show', :project_id => 1, :id => 1
-  #root :to => 'projects#index'
+  #root :to => 'locales#show', :project_id => 1, :id => 1
+  root :to => 'projects#index'
 
   match '/exception_test' => 'exception_test#error'
 
