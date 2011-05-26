@@ -22,6 +22,7 @@ group :development, :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'yard'
   gem 'rspec-rails'
+  gem 'fuubar'
   gem 'capybara'
   gem 'steak'
   gem 'spork', "0.9.0.rc3"
