@@ -43,7 +43,7 @@ end
 # guard 'mozrepl', :host => 'localhost', :port => 4242, :verbose => true do
 #   ...
 
-guard 'passenger' do #, :cli => '--port 3001' do
+guard 'passenger', :cli => '--port 3001' do
   watch('Gemfile')
   watch(/^lib\/.*\.rb$/)
   watch(/^config\/.*\.rb$/)

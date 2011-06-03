@@ -1,12 +1,16 @@
 class Project < ActiveRecord::Base
 
-  attr_accessible :title, :permalink, :locales_attributes
+  SNAPSHOT_PATH = File.join Rails.root, %w(public system snapshots)
+
+  attr_accessor :reset
+  attr_accessible :title, :permalink, :locales_attributes, :reset
 
   has_many :tokens
   has_many :locales
   has_many :translations, :through => :locales
   has_many :assignments
   has_many :users, :through => :assignments
+  has_many :snapshots, :as => :attachable
 
   accepts_nested_attributes_for :locales
 
@@ -14,6 +18,8 @@ class Project < ActiveRecord::Base
   validates :permalink, :presence => true,
     :format => { :with => /[:alphanum:-]+/ },
     :length => { :minimum => 4 }
+
+  after_update :perform_reset!, :if => :reset
 
   def remaining_locales
     codes = locales.map &:code
@@ -33,11 +39,22 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def new_snapshot_name
+    time = I18n.l Time.now, :format => :filename
+    name = "translations_%s_%s.yml" % [ permalink, time ]
+    File.join SNAPSHOT_PATH, name
+  end
+
   private
 
   def nesting(locale, token, translation)
     keys = (token.split('.').reverse << locale)
     keys.inject(translation) { |result, key| { key => result } }
+  end
+
+  def perform_reset!
+    snapshots.create!
+    tokens.destroy_all
   end
 
 end

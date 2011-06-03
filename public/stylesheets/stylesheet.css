@@ -171,3 +171,11 @@ td.title {
     padding: 10px 20px 10px 0px;
 }
 
+td {
+    padding: 3px 10px;
+}
+
+table {
+    background-color: #eee;
+    padding: 3px;
+}

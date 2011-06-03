@@ -10,12 +10,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110521162854) do
+ActiveRecord::Schema.define(:version => 20110527062123) do
 
   create_table "assignments", :force => true do |t|
     t.integer  "user_id"
     t.integer  "project_id"
     t.string   "role"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "documents", :force => true do |t|
+    t.string   "type"
+    t.string   "attachable_type"
+    t.integer  "attachable_id"
+    t.text     "comment"
+    t.string   "attachment_file_name"
+    t.string   "attachment_content_type"
+    t.integer  "attachment_file_size"
+    t.datetime "attachment_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -2,6 +2,11 @@ class ProjectsController < InheritedResources::Base
 
   before_filter :redirect_if_only_one_project, :only => :index
 
+  def show
+    #resource.snapshots.build
+    show!
+  end
+
   def create
     @project = Project.new(params[:project])
     # @project.assignments.build :user_id => current_user.id, :role => 'owner'

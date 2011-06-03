@@ -7,8 +7,17 @@ en:
   projects:
     show:
       title: Title
-      locale_count: Locale count
+      locale_count: Locales
+      token_count: Tokens
       add_locale: Add locale
+      create_snapshot: Create Snapshot
+      snapshots: Snapshots
+      filename: Filename
+      filesize: Size
+      created_at: Created at
+      reset_project: Reset Project
+      misc: Misc
+      locales: Locales
     index:
       title: Title
 
@@ -22,3 +31,9 @@ en:
   logout: logout
   new_project: New project
   my_projects: My projects
+  time:
+    formats:
+      filename: %Y-%m-%d-%H-%M
+
+  reset_warning: Locales and snapshots will be kept everthing else will vanish.
+  are_you_sure: Are you absolutely sure, about that?

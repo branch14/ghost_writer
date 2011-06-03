@@ -1,23 +1,54 @@
 -#%p.notice= notice
 
-%p
-  %b=t('.title')
+%h1
   =@project.title
-
-%p
-  %b=t('.locale_count')
+  &mdash;
+  =t('.locale_count')
   =@project.locales.count
+  &mdash;
+  =t('.token_count')
+  =@project.tokens.count
+
+=link_to t(:edit), edit_resource_path(@project)
+
+%h2=t('.locales')
 
 =form_for @project do |pf|
   =pf.fields_for :locales, @project.locales.build do |lf|
     %label=t('.add_locale')
     -options = @project.remaining_locales.sort_by &:last
     =lf.collection_select :code, options, :first, :last, :include_blank => t(:prompt)
-  =pf.submit  
+  =pf.submit
 
 %ul
   -@project.locales.each do |locale|
     -unless locale.new_record?
       %li=link_to locale.title, project_locale_path(@project, locale)
 
-=link_to t(:edit), edit_resource_path(@project)
+%h2=t('.snapshots')
+%table
+  %tr
+    %th=t '.filename'
+    %th=t '.filesize'
+    %th=t '.created_at'
+  -@project.snapshots.each do |snapshot|
+    -if snapshot.new_record?
+      %tr
+        %td{ :colspan => 3 }
+          =form_for snapshot do |df|
+            =df.hidden_field :attachable_type
+            =df.hidden_field :attachable_id
+            =df.submit t('.create_snapshot')
+    -else
+      %tr
+        %td=link_to snapshot.attachment_file_name, '/system/snapshots/' + snapshot.attachment_file_name
+        %td=number_to_human_size(snapshot.attachment_file_size)
+        %td=l snapshot.created_at, :format => :short
+
+%h2=t('.misc')
+
+=form_for @project do |pf|
+  =hidden_field_tag 'project[reset]', '1'
+  =pf.submit t('.reset_project'), :confirm => t('are_you_sure')
+  =t('reset_warning')
+
