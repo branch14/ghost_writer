@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110527062123) do
+ActiveRecord::Schema.define(:version => 20110606121850) do
 
   create_table "assignments", :force => true do |t|
     t.integer  "user_id"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(:version => 20110527062123) do
     t.boolean  "active",     :default => true
   end
 
+  add_index "translations", ["content", "locale_id"], :name => "index_translations_on_content_and_locale_id"
   add_index "translations", ["token_id", "locale_id"], :name => "index_translations_on_token_id_and_locale_id"
 
   create_table "users", :force => true do |t|
