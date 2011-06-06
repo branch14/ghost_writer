@@ -8,6 +8,7 @@
     $(document).ready(function() {
       $('#filter').delayedObserver(0.5, function(value, object) {
         var theSearchString = $("#filter").val();
+        if(theSearchString.length < 3) { return false; }
         var localeId = $("#locale_id").val();
         var projectId = $("#project_id").val();
         var url = '/translations';
@@ -38,4 +39,4 @@
   =hidden_field_tag :locale_id, @locale.id
   %input#filter{ :type => 'search', :placeholder => 'Find...' }
 
-%ul#translations=render :partial => 'translation', :collection => @locale.translations
+%ul#translations=render :partial => 'translation', :collection => @translations
