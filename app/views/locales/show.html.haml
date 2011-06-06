@@ -9,6 +9,7 @@
       $('#filter').delayedObserver(0.5, function(value, object) {
         var theSearchString = $("#filter").val();
         if(theSearchString.length < 3) { return false; }
+        $('#translations').html("<img src='/images/spinner.gif' />");
         var localeId = $("#locale_id").val();
         var projectId = $("#project_id").val();
         var url = '/translations';
