@@ -35,6 +35,7 @@
           =lf.collection_select :code, @project.remaining_locales.sort,
             :first, :last, :include_blank => t(:prompt)
         =pf.submit
+  %li=link_to t(:edit_project), project_path(@project)
 
 .search
   =hidden_field_tag :locale_id, @locale.id

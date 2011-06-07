@@ -36,4 +36,5 @@ en:
       filename: %Y-%m-%d-%H-%M
 
   reset_warning: Locales and snapshots will be kept everthing else will vanish.
-  are_you_sure: Are you absolutely sure, about that?
+  are_you_sure: Are you absolutely sure about that?
+  edit_project: Edit project
