@@ -46,42 +46,51 @@ class Project < ActiveRecord::Base
     File.join SNAPSHOT_PATH, name
   end
   
+  def log(msg)
+    if @log.nil?
+      @log = File.open(File.join(Rails.root, %w(log import.log)), 'a')
+      @log.sync = true
+    end
+    @log.puts msg
+  end
+
   def handle_missed!(filename)
-    logger.info "handle missing in #{filename}"
+    log "handle missing in #{filename}"
     data = File.open(filename, 'r').read
     missed = JSON.parse(data)  
     missed.each do |key, val|
       token = self.tokens.where(:raw => key).first
       if token.nil?
         token = self.tokens.create(:raw => key)
-        logger.info "created token for #{key}"
+        log "  created token for #{key}"
         token.translations.each do |translation|
-          logger.info "adjusting translation for #{translation.locale.code}"
+          log "  adjusting translation for #{translation.locale.code}"
           attrs = { :hits => val['count'][translation.locale.code] }
           content = val['default'][translation.locale.code] unless val['default'].nil?
           content = val[:default][translation.locale.code] unless val[:default].nil?
           content ||= key
           attrs[:content] = content unless content.nil?
-          logger.info "content: #{attrs[:content]}"
-          logger.info "hits:    #{attrs[:hits]}"
-          logger.info "attrs:   #{attrs.inspect}"
+          log "    content: #{attrs[:content]}"
+          log "    hits:    #{attrs[:hits]}"
+          log "    attrs:   #{attrs.inspect}"
           translation.reload
           #translation.update_attributes attrs
-          #logger.info("VE:"+translation.errors.full_messages) unless translation.valid?
+          #log("VE:"+translation.errors.full_messages) unless translation.valid?
           #translation.attributes.merge! attrs
           translation.content = content
           translation.hits = val['count'][translation.locale.code]
-          logger.info(translation.attributes.inspect)
-          logger.info("translation valid: #{translation.valid?}")
-          logger.info("token valid: #{translation.token.valid?}")
-          logger.info("locale valid: #{translation.locale.valid?}")
-          logger.info(translation.errors.full_messages)
+          log(translation.attributes.inspect)
+          log "    translation valid: #{translation.valid?}")
+          log "      token valid: #{translation.token.valid?}")
+          log "      locale valid: #{translation.locale.valid?}")
+          #log(translation.errors.full_messages)
           translation.save!
           unless translation.content == content
+            log "    uhoh. #{translations.inspect}"
             raise "hey, you have earned a content!=content error batch: #{translation.inspect}"
               #translation.errors.full_messages.inspect
           end
-          logger.info "SAVED"
+          log "    SAVED"
         end
       end
     end
