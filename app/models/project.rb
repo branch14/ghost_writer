@@ -55,7 +55,7 @@ class Project < ActiveRecord::Base
   end
 
   def handle_missed!(filename)
-    log "handle missing in #{filename}"
+    log "PROCESSING: #{filename}"
     data = File.open(filename, 'r').read
     missed = JSON.parse(data)  
     missed.each do |key, val|
@@ -73,11 +73,10 @@ class Project < ActiveRecord::Base
           translation.hits = val['count'][translation.locale.code]
           translation.save!
           unless translation.content == content
-            log "FAILED: #{translation.locale.code}.#{key}"
-            log "+++ incoming json +++"
+            log "ERROR: #{translation.locale.code}.#{key}"
             log val.to_yaml
-            log "+++ translation +++"
-            log translation.to_yaml
+          else
+            log "SUCCESS: #{translation.locale.code}.#{key}"
           end
         end
       end
