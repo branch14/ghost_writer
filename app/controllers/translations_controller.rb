@@ -5,10 +5,12 @@ class TranslationsController < InheritedResources::Base
   private
 
   def collection
-    @translations ||= Translation.order('hits DESC').includes(:token)
+    @translations ||= Translation.order('hits DESC').
+      includes(:token).where(:locale_id => params[:locale_id])
     if params[:filter]
-      @translations = @translations.where('content LIKE ?', "%#{params[:filter]}%").
-        where(:locale_id => params[:locale_id])
+      @translations = @translations.
+        where('content LIKE ? or tokens.raw LIKE ?', 
+              "%#{params[:filter]}%", "%#{params[:filter]}%")
     end
   end
 

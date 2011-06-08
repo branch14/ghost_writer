@@ -10,7 +10,11 @@ class ApiController < ApplicationController
   end
 
   def single_post
-    filename = File.join(Rails.root, 'public', "#{@project.permalink}_#{Time.now.to_i}.json")
+    filename, counter = nil, 0
+    while filename.nil? or File.exist?(filename)
+      counter += 1
+      filename = File.join(Rails.root, 'public', "#{@project.permalink}_%04d.json" % counter)
+    end
     File.open(filename, 'w') { |f| f.puts params[:miss] }
     @project.delay.handle_missed!(filename)
     send_yaml

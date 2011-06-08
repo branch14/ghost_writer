@@ -11,7 +11,7 @@ class Token < ActiveRecord::Base
   validates :raw, :presence => true#, :format => { :with => /[:alphanum:.-]+/ }
   validates :project, :presence => true
 
-  before_save :hash_token!, :if => :raw_changed?
+  #before_save :hash_token!, :if => :raw_changed?
   after_create :prepop_translations!
 
   def hits
@@ -31,9 +31,9 @@ class Token < ActiveRecord::Base
 
   private
 
-  def hash_token!
-    self.hashed = Base64.encode64(Digest::MD5.hexdigest(raw))
-  end
+  #def hash_token!
+  #  self.hashed = Base64.encode64(Digest::MD5.hexdigest(raw))
+  #end
 
   def prepop_translations!
     missing_translations.map do |locale|

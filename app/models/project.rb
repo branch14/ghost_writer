@@ -58,25 +58,25 @@ class Project < ActiveRecord::Base
     log "PROCESSING: #{filename}"
     data = File.open(filename, 'r').read
     missed = JSON.parse(data)  
+    #File.open(filename.sub('.json', '.yaml'), 'w') { |f| f.puts missed.to_yaml }
     missed.each do |key, val|
       token = self.tokens.where(:raw => key).first
       if token.nil?
         token = self.tokens.create(:raw => key)
         token.translations.each do |translation|
-          attrs = { :hits => val['count'][translation.locale.code] }
+          #attrs = { :hits => val['count'][translation.locale.code] }
           content = val['default'][translation.locale.code] unless val['default'].nil?
           content = val[:default][translation.locale.code] unless val[:default].nil?
           content ||= key
-          attrs[:content] = content unless content.nil?
+          #attrs[:content] = content unless content.nil?
           #translation.reload
           translation.content = content
           translation.hits = val['count'][translation.locale.code]
           translation.save!
+          log "#{translation.locale.code}.#{key} => #{content}"
           unless translation.content == content
-            log "ERROR: #{translation.locale.code}.#{key}"
+            log "ERROR"
             log val.to_yaml
-          else
-            log "SUCCESS: #{translation.locale.code}.#{key}"
           end
         end
       end
