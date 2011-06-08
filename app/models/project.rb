@@ -79,7 +79,7 @@ class Project < ActiveRecord::Base
           translation.save!
           unless translation.content == content
             raise "hey, you have earned a content!=content error batch " +
-              translations.errors.full_messages.inspect
+              translation.errors.full_messages.inspect
           end
           #logger.debug "SAVED"
         end
