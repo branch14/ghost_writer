@@ -73,10 +73,19 @@ class Project < ActiveRecord::Base
           translation.content = content
           translation.hits = val['count'][translation.locale.code]
           translation.save!
-          log "#{translation.locale.code}.#{key} => #{content}"
+          log "NEW #{translation.locale.code}.#{key} => #{content}"
           unless translation.content == content
             log "ERROR"
             log val.to_yaml
+          end
+        end
+      else
+        token.translations.each do |translation|
+          content = val['default'][translation.locale.code] unless val['default'].nil?
+          content = val[:default][translation.locale.code] unless val[:default].nil?
+          if content && !translation.active?
+            translation.update_attribute(:content, content)
+            log "UPDATE #{translation.locale.code}.#{key} => #{content}"
           end
         end
       end
