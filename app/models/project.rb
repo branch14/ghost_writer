@@ -55,16 +55,15 @@ class Project < ActiveRecord::Base
   end
 
   def handle_missed!(filename)
-    log "handle missing in #{filename}"
+    log "handle missing in #{filename}\n"
     data = File.open(filename, 'r').read
     missed = JSON.parse(data)  
     missed.each do |key, val|
       token = self.tokens.where(:raw => key).first
       if token.nil?
         token = self.tokens.create(:raw => key)
-        log "  created token for #{key}"
         token.translations.each do |translation|
-          log "  adjusting translation for #{translation.locale.code}"
+          log "  adjusting translation for '#{translation.locale.code}' #{key}"
           attrs = { :hits => val['count'][translation.locale.code] }
           content = val['default'][translation.locale.code] unless val['default'].nil?
           content = val[:default][translation.locale.code] unless val[:default].nil?
@@ -79,18 +78,18 @@ class Project < ActiveRecord::Base
           #translation.attributes.merge! attrs
           translation.content = content
           translation.hits = val['count'][translation.locale.code]
-          log(translation.attributes.inspect)
+          #log translation.attributes.inspect 
           log "    translation valid: #{translation.valid?}"
           log "      token valid: #{translation.token.valid?}"
           log "      locale valid: #{translation.locale.valid?}"
           #log(translation.errors.full_messages)
           translation.save!
           unless translation.content == content
-            log "    uhoh. #{translations.inspect}"
+            log "    FAILED. uhoh. #{translations.inspect}\n"
             raise "hey, you have earned a content!=content error batch: #{translation.inspect}"
               #translation.errors.full_messages.inspect
           end
-          log "    SAVED"
+          log "    SAVED WITH SUCCESS\n"
         end
       end
     end
