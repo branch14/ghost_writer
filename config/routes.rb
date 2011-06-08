@@ -13,7 +13,8 @@ ProjectZero::Application.routes.draw do
   resources :translations
   # resources :tokens
 
-  
+  resources :jobs
+
   get '/api/:project_id/:locale_code/:token_raw' => 'api#simple'
 
   post '/api/:project_id' => 'api#single_post'

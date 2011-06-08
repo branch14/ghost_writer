@@ -224,7 +224,7 @@ DEPENDENCIES
   capistrano-ext
   capybara
   compass
-  delayed_job
+  delayed_job (= 2.1.4)
   devise
   exception_notification_rails3 (= 1.2.0)
   factory_girl_rails

@@ -1,0 +1,28 @@
+%table
+  %tr
+    %th id
+    %th priority 
+    %th attempts
+    %th handler
+    %th last_error
+    %th run_at
+    -# %th locked_at
+    -# %th failed_at
+    -# %th locked_by
+    %th created_at
+    -# %th updated_at
+  -@jobs.each do |job|
+    %tr
+      %td=job.id
+      %td=job.priority
+      %td=job.attempts
+      %td
+        %pre=job.handler
+      %td
+        %pre=job.last_error.gsub('\n', "\n") if job.last_error
+      %td=job.run_at
+      -# %td=job.locked_at
+      -# %td=job.failed_at
+      -# %td=job.locked_by
+      %td=job.created_at
+      -# %td=job.updated_at

@@ -5,7 +5,7 @@ gem 'rails', '3.0.5'
 # gems in alphabetic order
 gem 'acts-as-taggable-on'
 gem 'best_in_place'
-gem 'delayed_job'
+gem 'delayed_job', '2.1.4'
 gem 'exception_notification_rails3', '1.2.0', :require => 'exception_notifier'
 gem 'formtastic', '1.2.3'
 gem 'haml', '3.1.1'
