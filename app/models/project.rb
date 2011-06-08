@@ -80,9 +80,9 @@ class Project < ActiveRecord::Base
           translation.content = content
           translation.hits = val['count'][translation.locale.code]
           log(translation.attributes.inspect)
-          log "    translation valid: #{translation.valid?}")
-          log "      token valid: #{translation.token.valid?}")
-          log "      locale valid: #{translation.locale.valid?}")
+          log "    translation valid: #{translation.valid?}"
+          log "      token valid: #{translation.token.valid?}"
+          log "      locale valid: #{translation.locale.valid?}"
           #log(translation.errors.full_messages)
           translation.save!
           unless translation.content == content
