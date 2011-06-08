@@ -55,7 +55,7 @@ class Project < ActiveRecord::Base
   end
 
   def handle_missed!(filename)
-    log "handle missing in #{filename}\n"
+    log "handle missing in #{filename}"
     data = File.open(filename, 'r').read
     missed = JSON.parse(data)  
     missed.each do |key, val|
@@ -63,33 +63,22 @@ class Project < ActiveRecord::Base
       if token.nil?
         token = self.tokens.create(:raw => key)
         token.translations.each do |translation|
-          log "  adjusting translation for '#{translation.locale.code}' #{key}"
           attrs = { :hits => val['count'][translation.locale.code] }
           content = val['default'][translation.locale.code] unless val['default'].nil?
           content = val[:default][translation.locale.code] unless val[:default].nil?
           content ||= key
           attrs[:content] = content unless content.nil?
-          log "    content: #{attrs[:content]}"
-          log "    hits:    #{attrs[:hits]}"
-          log "    attrs:   #{attrs.inspect}"
-          translation.reload
-          #translation.update_attributes attrs
-          #log("VE:"+translation.errors.full_messages) unless translation.valid?
-          #translation.attributes.merge! attrs
+          #translation.reload
           translation.content = content
           translation.hits = val['count'][translation.locale.code]
-          #log translation.attributes.inspect 
-          log "    translation valid: #{translation.valid?}"
-          log "      token valid: #{translation.token.valid?}"
-          log "      locale valid: #{translation.locale.valid?}"
-          #log(translation.errors.full_messages)
           translation.save!
           unless translation.content == content
-            log "    FAILED maybe, we should look into this soome time. #{translation.inspect}\n"
-            #raise "hey, you have earned a content!=content error batch: #{translation.inspect}"
-            #translation.errors.full_messages.inspect
+            log "FAILED: #{translation.locale.code}.#{key}"
+            log "+++ incoming json +++"
+            log val.to_yaml
+            log "+++ translation +++"
+            log translation.to_yaml
           end
-          log "    SAVED WITH SUCCESS\n"
         end
       end
     end
