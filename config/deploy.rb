@@ -8,7 +8,7 @@ role :db,  "ghost.panter.ch", :primary => true
 set :rails_env, 'production'
 
 set :deploy_via, :remote_cache
-set :git_enable_submodules, 1
+#set :git_enable_submodules, 1
 set :scm, :git
 set :default_run_options, { :pty => true }
 set :repository, "gitosis@git.panter.ch:ghostwriter.git"
