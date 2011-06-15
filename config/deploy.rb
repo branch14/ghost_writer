@@ -2,9 +2,9 @@ require 'bundler/capistrano'
 
 set :application, "project_zero"
 
-role :app, "ghostwriter.panter.ch"
-role :web, "ghostwriter.panter.ch"
-role :db,  "ghostwriter.panter.ch", :primary => true
+role :app, "ghost.panter.ch"
+role :web, "ghost.panter.ch"
+role :db,  "ghost.panter.ch", :primary => true
 set :rails_env, 'production'
 
 set :deploy_via, :remote_cache
@@ -13,8 +13,8 @@ set :scm, :git
 set :default_run_options, { :pty => true }
 set :repository, "gitosis@git.panter.ch:ghostwriter.git"
 set :ssh_options, {:forward_agent => true}
-set :deploy_to, "/home/gwriter/ghostwriter.panter.ch"
-set :user, "gwriter"
+set :deploy_to, "/home/rails/app"
+set :user, "rails"
 set :use_sudo, false
 
 task :update_config_links, :roles => [:app] do
