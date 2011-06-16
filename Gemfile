@@ -15,7 +15,7 @@ gem 'kaminari'
 gem 'mysql'
 gem 'devise'
 gem 'paperclip', '~> 2.3'
-#gem 'pg'
+gem 'pg'
 gem 'yaml_db'
 
 # Bundle gems for the local environment. Make sure to
