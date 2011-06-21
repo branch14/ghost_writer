@@ -1,5 +1,3 @@
--#%p.notice= notice
-
 %h1
   =@project.title
   &mdash;
@@ -45,10 +43,15 @@
         %td=number_to_human_size(snapshot.attachment_file_size)
         %td=l snapshot.created_at, :format => :short
 
-%h2=t('.misc')
+%h2=t('.reset')
 
 =form_for @project do |pf|
-  =hidden_field_tag 'project[reset]', '1'
-  =pf.submit t('.reset_project'), :confirm => t('are_you_sure')
-  =t('reset_warning')
+  =hidden_field_tag 'project[reset_counters]', '1'
+  =pf.submit t('.reset_counters'), :confirm => t('are_you_sure')
+  =t('reset_counters_warning')
+
+=form_for @project do |pf|
+  =hidden_field_tag 'project[reset_translations]', '1'
+  =pf.submit t('.reset_translations'), :confirm => t('are_you_sure')
+  =t('reset_translations_warning')
 

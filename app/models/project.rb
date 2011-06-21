@@ -2,8 +2,9 @@ class Project < ActiveRecord::Base
 
   SNAPSHOT_PATH = File.join Rails.root, %w(public system snapshots)
 
-  attr_accessor :reset
-  attr_accessible :title, :permalink, :locales_attributes, :reset
+  attr_accessor :reset_translations, :reset_counters
+  attr_accessible :title, :permalink, :locales_attributes,
+                  :reset_translations, :reset_counters
 
   has_many :tokens
   has_many :locales
@@ -19,7 +20,8 @@ class Project < ActiveRecord::Base
     :format => { :with => /[:alphanum:-]+/ },
     :length => { :minimum => 4 }
 
-  after_update :perform_reset!, :if => :reset
+  after_update :perform_reset_translations!, :if => :reset_translations
+  after_update :perform_reset_counters!, :if => :reset_counters
 
   def remaining_locales
     codes = locales.map &:code
@@ -71,7 +73,7 @@ class Project < ActiveRecord::Base
           #attrs[:content] = content unless content.nil?
           #translation.reload
           translation.content = content
-          translation.hits = val['count'][translation.locale.code]
+          translation.miss_counter = val['count'][translation.locale.code]
           translation.save!
           log "NEW #{translation.locale.code}.#{key} => #{content}"
           unless translation.content == content
@@ -99,9 +101,13 @@ class Project < ActiveRecord::Base
     keys.inject(translation) { |result, key| { key => result } }
   end
 
-  def perform_reset!
+  def perform_reset_translations!
     snapshots.create!
     tokens.destroy_all
+  end
+
+  def perform_reset_counters!
+    translations.each &:reset_counters!
   end
 
 end

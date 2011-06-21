@@ -15,8 +15,9 @@ en:
       filename: Filename
       filesize: Size
       created_at: Created at
-      reset_project: Reset Project
-      misc: Misc
+      reset_translations: Reset Translations
+      reset_counters: Reset Counters
+      reset: Reset
       locales: Locales
     index:
       title: Title
@@ -35,6 +36,7 @@ en:
     formats:
       filename: %Y-%m-%d-%H-%M
 
-  reset_warning: Locales and snapshots will be kept everthing else will vanish.
+  reset_counters_warning: All 'hits' and 'missed' counters will be set to zero.
+  reset_translations_warning: Locales and snapshots will be kept everthing else will vanish.
   are_you_sure: Are you absolutely sure about that?
   edit_project: Edit project

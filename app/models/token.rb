@@ -14,8 +14,12 @@ class Token < ActiveRecord::Base
   #before_save :hash_token!, :if => :raw_changed?
   after_create :prepop_translations!
 
-  def hits
-    translations.sum(:hits)
+  def hits_counter
+    translations.sum(:hits_counter)
+  end
+
+  def miss_counter
+    translations.sum(:miss_counter)
   end
 
   def has_interpolations?

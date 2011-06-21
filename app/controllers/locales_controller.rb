@@ -11,7 +11,7 @@ class LocalesController < InheritedResources::Base
   #end
 
   def load_translations
-    @translations = resource.translations.limit(10).order('hits DESC').includes(:token)
+    @translations = resource.translations.limit(10).order('miss_counter DESC').includes(:token)
   end
 
 end

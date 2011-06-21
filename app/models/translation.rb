@@ -1,6 +1,6 @@
 class Translation < ActiveRecord::Base
 
-  attr_accessible :content, :locale, :token, :locale_id, :token_id, :hits
+  attr_accessible :content, :locale, :token, :locale_id, :token_id, :hits_counter, :miss_counter
 
   belongs_to :locale
   belongs_to :token
@@ -15,6 +15,8 @@ class Translation < ActiveRecord::Base
   #before_validation :prepop_content!, :on => :create, :unless => :content?
   before_save :set_activation!, :if => :content_changed? 
   before_save :nilify_blank_content!
+
+  before_save :reset_counters!, :if => proc { |t| t.content_changed? and !t.miss_counter_changed? }
 
   private
 
@@ -31,6 +33,10 @@ class Translation < ActiveRecord::Base
 
   def nilify_blank_content!
     self.content = nil if content.blank?
+  end
+
+  def reset_counters!
+    update_attributes :miss_counter => 0, :hits_counter => 0
   end
 
 end

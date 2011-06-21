@@ -1,6 +1,9 @@
 - id = "translation-#{translation.id}" 
 %li.translation{ :id => id, :class => "#{translation.active? ? 'active' : 'inactive'}" }
-  .token== (#{translation.hits}) #{translation.raw}
+  .token
+    %span.counter=translation.miss_counter
+    &mdash;
+    %span.raw=translation.raw
   -# .tags
   -#   -if translation.tags.size > 0
   -#     -translation.tags.each do |tag|
