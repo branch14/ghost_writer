@@ -16,5 +16,5 @@
     &mdash;
     %span.actions
       -#!=link_to t(:edit), edit_project_token_path(@project, translation.token)
-      !=link_to t(:delete), project_token_path(@project, translation.token), :method => 'delete', :confirm => t('.delete.sure', :key => translation.raw)
+      -#!=link_to t(:delete), project_token_path(@project, translation.token), :method => 'delete', :confirm => t('.delete.sure', :key => translation.raw)
   .content=best_in_place translation, :content   
