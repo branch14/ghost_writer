@@ -1,5 +1,9 @@
 class TokensController < InheritedResources::Base
 
-  belongs_to :project
+  optional_belongs_to :project
+
+  def destroy
+    destroy! { :back }
+  end
 
 end

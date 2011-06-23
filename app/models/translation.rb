@@ -16,7 +16,7 @@ class Translation < ActiveRecord::Base
   before_save :set_activation!, :if => :content_changed? 
   before_save :nilify_blank_content!
 
-  before_save :reset_counters!, :if => proc { |t| t.content_changed? and !t.miss_counter_changed? }
+  before_save :zero_counters!, :if => proc { |t| t.content_changed? and !t.miss_counter_changed? }
 
   private
 
@@ -36,7 +36,12 @@ class Translation < ActiveRecord::Base
   end
 
   def reset_counters!
-    update_attributes :miss_counter => 0, :hits_counter => 0
+    zero_counters!
+    save
+  end
+
+  def zero_counters!
+    attributes.merge! :miss_counter => 0, :hits_counter => 0
   end
 
 end

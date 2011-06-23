@@ -21,7 +21,7 @@ class Project < ActiveRecord::Base
     :length => { :minimum => 4 }
 
   after_update :perform_reset_translations!, :if => :reset_translations
-  after_update :perform_reset_counters!, :if => :reset_counters
+  # after_update :perform_reset_counters!, :if => :reset_counters
 
   def remaining_locales
     codes = locales.map &:code
@@ -83,12 +83,13 @@ class Project < ActiveRecord::Base
         end
       else
         token.translations.each do |translation|
+          miss_counter = (translation.miss_counter || 0) + val['count'][translation.locale.code].to_i
+          attrs = {}
+          attrs[:miss_counter] = miss_counter
           content = val['default'][translation.locale.code] unless val['default'].nil?
-          content = val[:default][translation.locale.code] unless val[:default].nil?
-          if content && !translation.active?
-            translation.update_attribute(:content, content)
-            log "UPDATE #{translation.locale.code}.#{key} => #{content}"
-          end
+          attrs[:content] = content unless content.nil?
+          translation.update_attributes attrs
+          log "UPDATE #{translation.locale.code}.#{key} => #{miss_counter} - #{content}"
         end
       end
     end

@@ -6,6 +6,13 @@
                 document GET    /documents/:id(.:format)                           {:action=>"show", :controller=>"documents"}
                          PUT    /documents/:id(.:format)                           {:action=>"update", :controller=>"documents"}
                          DELETE /documents/:id(.:format)                           {:action=>"destroy", :controller=>"documents"}
+               snapshots GET    /snapshots(.:format)                               {:action=>"index", :controller=>"snapshots"}
+                         POST   /snapshots(.:format)                               {:action=>"create", :controller=>"snapshots"}
+            new_snapshot GET    /snapshots/new(.:format)                           {:action=>"new", :controller=>"snapshots"}
+           edit_snapshot GET    /snapshots/:id/edit(.:format)                      {:action=>"edit", :controller=>"snapshots"}
+                snapshot GET    /snapshots/:id(.:format)                           {:action=>"show", :controller=>"snapshots"}
+                         PUT    /snapshots/:id(.:format)                           {:action=>"update", :controller=>"snapshots"}
+                         DELETE /snapshots/:id(.:format)                           {:action=>"destroy", :controller=>"snapshots"}
         new_user_session GET    /users/sign_in(.:format)                           {:action=>"new", :controller=>"devise/sessions"}
             user_session POST   /users/sign_in(.:format)                           {:action=>"create", :controller=>"devise/sessions"}
     destroy_user_session GET    /users/sign_out(.:format)                          {:action=>"destroy", :controller=>"devise/sessions"}
@@ -26,6 +33,13 @@ cancel_user_registration GET    /users/cancel(.:format)                         
           project_locale GET    /projects/:project_id/locales/:id(.:format)        {:action=>"show", :controller=>"locales"}
                          PUT    /projects/:project_id/locales/:id(.:format)        {:action=>"update", :controller=>"locales"}
                          DELETE /projects/:project_id/locales/:id(.:format)        {:action=>"destroy", :controller=>"locales"}
+          project_tokens GET    /projects/:project_id/tokens(.:format)             {:action=>"index", :controller=>"tokens"}
+                         POST   /projects/:project_id/tokens(.:format)             {:action=>"create", :controller=>"tokens"}
+       new_project_token GET    /projects/:project_id/tokens/new(.:format)         {:action=>"new", :controller=>"tokens"}
+      edit_project_token GET    /projects/:project_id/tokens/:id/edit(.:format)    {:action=>"edit", :controller=>"tokens"}
+           project_token GET    /projects/:project_id/tokens/:id(.:format)         {:action=>"show", :controller=>"tokens"}
+                         PUT    /projects/:project_id/tokens/:id(.:format)         {:action=>"update", :controller=>"tokens"}
+                         DELETE /projects/:project_id/tokens/:id(.:format)         {:action=>"destroy", :controller=>"tokens"}
                 projects GET    /projects(.:format)                                {:action=>"index", :controller=>"projects"}
                          POST   /projects(.:format)                                {:action=>"create", :controller=>"projects"}
              new_project GET    /projects/new(.:format)                            {:action=>"new", :controller=>"projects"}
@@ -40,6 +54,13 @@ cancel_user_registration GET    /users/cancel(.:format)                         
              translation GET    /translations/:id(.:format)                        {:action=>"show", :controller=>"translations"}
                          PUT    /translations/:id(.:format)                        {:action=>"update", :controller=>"translations"}
                          DELETE /translations/:id(.:format)                        {:action=>"destroy", :controller=>"translations"}
+                    jobs GET    /jobs(.:format)                                    {:action=>"index", :controller=>"jobs"}
+                         POST   /jobs(.:format)                                    {:action=>"create", :controller=>"jobs"}
+                 new_job GET    /jobs/new(.:format)                                {:action=>"new", :controller=>"jobs"}
+                edit_job GET    /jobs/:id/edit(.:format)                           {:action=>"edit", :controller=>"jobs"}
+                     job GET    /jobs/:id(.:format)                                {:action=>"show", :controller=>"jobs"}
+                         PUT    /jobs/:id(.:format)                                {:action=>"update", :controller=>"jobs"}
+                         DELETE /jobs/:id(.:format)                                {:action=>"destroy", :controller=>"jobs"}
                          GET    /api/:project_id/:locale_code/:token_raw(.:format) {:action=>"simple", :controller=>"api"}
                          POST   /api/:project_id(.:format)                         {:action=>"single_post", :controller=>"api"}
                          GET    /api/:project_id(.:format)                         {:action=>"single_get", :controller=>"api"}

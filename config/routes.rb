@@ -8,10 +8,10 @@ ProjectZero::Application.routes.draw do
 
   resources :projects do
     resources :locales
+    resources :tokens
   end
 
   resources :translations
-  # resources :tokens
 
   resources :jobs
 
