@@ -1,0 +1,4 @@
+If tokens were deleted rather than destroyed
+--------------------------------------------
+
+delete from translations tr where (select count(*) from tokens tk where tk.id = tr.token_id) = 0;

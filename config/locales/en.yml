@@ -23,9 +23,6 @@ en:
       title: Title
 
   prompt: Select...
-  locales:
-    show:
-      add_locale: Add locale
 
   no_tags: no tags
   login: login
@@ -46,3 +43,5 @@ en:
     translation:
       delete:
         sure: Delete "%{key}"?
+    show:
+      add_locale: Add locale
