@@ -16,7 +16,7 @@ class TranslationsController < InheritedResources::Base
 
   def like
     case ActiveRecord::Base.configurations[Rails.env]['adapter']
-    when 'pg' then 'ILIKE'
+    when 'postgresql' then 'ILIKE'
     else
       'LIKE'
     end
