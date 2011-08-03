@@ -26,8 +26,7 @@ namespace :deploy do
   task :start do ; end
   task :stop do ; end
   task :restart, :roles => :app, :except => { :no_release => true } do
-    # we just have to kill dj, monit will restart it for us
-    run "kill `cat #{shared_path}/pids/dj.pid`; true"
+    run '/usr/bin/curl --silent -d "action=restart" http://localhost:2812/delayed_job > /dev/null'
     run "touch #{File.join(current_path,'tmp','restart.txt')}"
   end
 end
