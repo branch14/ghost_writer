@@ -10,3 +10,11 @@ ExpiresByType application/javascript "access plus 1 year"
 
 # compress static text files
 AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css application/javascript
+
+# Show maintenance page if it exists
+ErrorDocument 503 /system/maintenance.html
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !\.(css|gif|jpg|png)$
+RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+RewriteRule ^.*$  -  [redirect=503,last]
