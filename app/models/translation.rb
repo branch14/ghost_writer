@@ -6,6 +6,7 @@ class Translation < ActiveRecord::Base
   belongs_to :token
 
   delegate :raw, :to => :token
+  delegate :code, :to => :locale
 
   #validates :locale, :presence => true
   #validates :token, :presence => true, :unless => :new_record?

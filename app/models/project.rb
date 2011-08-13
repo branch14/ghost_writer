@@ -28,6 +28,17 @@ class Project < ActiveRecord::Base
     Locale.available.reject { |key, value| codes.include? key }
   end
 
+  def aggregated_translations2(locales=nil)
+    locales ||= self.locales
+    locales.inject({}) do |result, locale|
+      tree = tokens.roots.inject({}) do |provis, root|
+        provis.merge strip_down(root.subtree.arrange, locale)
+      end
+      result.merge locale.code => tree
+    end
+  end
+
+  # TODO this will go after migration to ancestry
   def aggregated_translations
     # assumption everything has been loaded eagerly
     locales.inject({}) do |result, locale|
@@ -48,6 +59,7 @@ class Project < ActiveRecord::Base
     File.join SNAPSHOT_PATH, name
   end
   
+  # TODO this will go after migration to ancestry
   def log(msg)
     if @log.nil?
       @log = File.open(File.join(Rails.root, %w(log import.log)), 'a')
@@ -56,6 +68,22 @@ class Project < ActiveRecord::Base
     @log.puts msg
   end
 
+  def find_or_create_tokens(full_key)
+    parent = tokens
+    keys = full_key.split '.'
+    Array.new.tap do |tokens|
+      keys.each_with_index do |key, index|
+        token = parent.at_depth(index).where(:key => key).first
+        # FIXME use before_save callback
+        # token ||= parent.create!(:key => key, :project => self)
+        token ||= parent.build(:key => key, :project => self).tap { |t| t.update_full_key; t.save! }
+        tokens << token
+        parent = token.children
+      end
+    end
+  end
+
+  # TODO this will go after migration to ancestry
   def handle_missed!(filename)
     log "PROCESSING: #{filename}"
     data = File.open(filename, 'r').read
@@ -94,9 +122,43 @@ class Project < ActiveRecord::Base
       end
     end
   end
-  
+
+  # options has one and only one of...
+  #  * :filename 
+  #  * :json a JSON String
+  #  * :data a Hash
+  def handle_missed2!(options)
+    options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
+    options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
+    raise "no data supplied" if options[:data].nil? or options[:data].empty?
+    options[:data].each do |key, val|
+      token = find_or_create_tokens(key).last
+      token.update_or_create_all_translations(normalize_attributes(val))
+    end
+  end
+
+  # TODO adjust this method to incoming data
+  def normalize_attributes(attrs)
+    locales.map(&:code).inject({}) do |result, code|
+      result.merge code => {
+        'content' => attrs['default'][code],
+        'miss_counter' => attrs['count'][code]
+      }
+    end
+  end
+
   private
 
+  def strip_down(tree, locale)
+    Hash.new.tap do |result|
+      tree.each do |token, value|
+        result[token.key] = value.empty? ?
+          token.translation_for(locale).content : strip_down(value, locale)
+      end
+    end
+  end
+
+  # TODO this has do go
   def nesting(locale, token, translation)
     keys = (token.split('.').reverse << locale)
     keys.inject(translation) { |result, key| { key => result } }

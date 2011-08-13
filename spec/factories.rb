@@ -18,3 +18,8 @@ Factory.define :translation do |f|
   f.association :token
 end
 
+Factory.define :user do |f|
+  f.sequence(:email) { |n| "user#{n}@example.com" }
+  f.password "joshua"
+  f.password_confirmation "joshua"
+end

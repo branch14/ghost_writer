@@ -2,9 +2,9 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 describe Project do
 
-  context "a valid project" do 
+  context "given a valid project with one locale" do 
 
-    let(:project) { Factory(:project) }
+    let(:project) { Factory(:project).tap { |p| p.locales.create :code => 'en' } }
 
     it "should be valid" do
       project.should be_valid
@@ -16,46 +16,50 @@ describe Project do
       project.errors[:title].should_not be_empty
     end
 
+    it 'should normalize attributes' do
+      input = {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}                                
+      expected = {"en" => {"content" => "This is a test.", "miss_counter" => 1}}
+      normalized = project.normalize_attributes(input)
+      normalized.should eq(expected)
+    end
+
+    it 'should handle missed' do
+      data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
+      expect { project.handle_missed2!(:data => data) }.to change(Token, :count).by(4)
+    end
+
+    it 'should properly build aggregated translations' do
+      data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
+      expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test."}}}}}
+      project.handle_missed2!(:data => data)
+      project.aggregated_translations2.should eq(expected)
+
+      data = {"this.is.a.2nd_test" => {"default"=>{"en"=>"Hello world."}, "count"=>{"en"=>1}}}
+      expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test.",
+                                                       "2nd_test" => "Hello world."}}}}}
+      project.handle_missed2!(:data => data)
+      project.aggregated_translations2.should eq(expected)
+    end
+
+    it 'should handle missed from json file' do
+      data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
+      expect { project.handle_missed2! :json => data.to_json }.to change(Token, :count).by(4)
+    end
+
+    it 'should nicely find or create tokens by full key' do
+      tokens = project.find_or_create_tokens('this.is.a.test')
+      tokens.size.should eq(4)
+      tokens.map(&:key).should eq(%w(this is a test))
+      tokens.map(&:ancestry_depth).should eq([0, 1, 2, 3])
+      tokens.map(&:ancestry).should eq([nil] + %w(1 1/2 1/2/3))
+      tokens.map(&:full_key).should eq(%w(this this.is this.is.a this.is.a.test))
+    end
+
     #pending "should provide a list of remaining locales" do
-    #  
     #end
 
     #pending "should accept nested attributes for locales" do
-    #  #project.should be_respond_to(:locales_attributes)
     #end
-    
-    it 'should return aggregated translation' do
-      project.locales.create :code => 'en'
-      project.should have(1).locale
-
-      token = project.tokens.create :raw => 'this.is.a.test'
-      project.should have(1).token
-      token.should have(1).translation
-
-      token.translations.first.update_attributes(:content => 'This is a test.')
-      expected = { 'en' => { 'this' => { 'is' => { 'a' => { 'test' => 'This is a test.' }}}}}
-      project.aggregated_translations.should == expected
-    end
-
-    it 'should return aggregated translations' do
-      project.locales.create :code => 'en'
-      project.should have(1).locale
-
-      token0 = project.tokens.create :raw => 'this.is.a.test'
-      token1 = project.tokens.create :raw => 'this.is.another.test'
-      project.should have(2).token
-      token0.should have(1).translation
-      token1.should have(1).translation
-
-      token0.translations.first.update_attributes(:content => 'This is a test.')
-      token1.translations.first.update_attributes(:content => 'This is another test.')
-      expected = { 'en' => { 'this' => { 'is' => 
-            { 'a' => { 'test' => 'This is a test.' },
-              'another' => { 'test' => 'This is another test.' }}}}}
-      project.aggregated_translations.should == expected
-    end
 
   end
-
-
 end

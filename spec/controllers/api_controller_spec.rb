@@ -16,16 +16,34 @@ describe ApiController do
       project.locales.create :code => 'en'
       missed = { 'this.is.a.test' => { 'count' => { 'en' => 1 },
           'default' =>  { 'en' => 'This is a test.' } } }
-      post :single_post, :project_id => project.id ,:miss => missed.to_json
-      assigns(:missed).should == missed
 
-      project.should have(1).token
-      token = project.tokens.first
-      token.raw.should == 'this.is.a.test'
-      token.should have(1).translation
-      translation = token.translations.first
+      Delayed::Job.all.should be_empty
+      post :single_post, :project_id => project.id ,:miss => missed.to_json
+      response.should be_success
+
+      Delayed::Job.count.should == 1
+      result = Delayed::Worker.new.work_off(1)
+      result.should eq([1, 0])
+      Delayed::Job.count.should == 0
+
+      project.should have(4).tokens
+
+      project.tokens.at_depth(0).first.key.should eq('this')
+      project.tokens.at_depth(1).first.key.should eq('is')
+      project.tokens.at_depth(2).first.key.should eq('a')
+      project.tokens.at_depth(3).first.key.should eq('test')
+      
+      leaf = project.tokens.at_depth(3).first
+      leaf.should have(1).translation
+      translation = leaf.translations.first
       translation.locale.code.should == 'en'
       translation.content.should == 'This is a test.'
+
+      post :single_post, :project_id => project.id
+
+      response.should be_success
+      expected = {'en'=>{'this'=>{'is'=>{'a'=>{'test'=>'This is a test.'}}}}}
+      response.body.should eq(expected.to_yaml)
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110621083009) do
+ActiveRecord::Schema.define(:version => 20110809093445) do
 
   create_table "assignments", :force => true do |t|
     t.integer  "user_id"
@@ -92,8 +92,14 @@ ActiveRecord::Schema.define(:version => 20110621083009) do
     t.datetime "updated_at"
     t.boolean  "complex"
     t.text     "notes"
+    t.string   "ancestry"
+    t.integer  "ancestry_depth"
+    t.string   "key"
+    t.string   "full_key"
   end
 
+  add_index "tokens", ["ancestry"], :name => "index_tokens_on_ancestry"
+  add_index "tokens", ["ancestry_depth"], :name => "index_tokens_on_depth"
   add_index "tokens", ["hashed", "project_id"], :name => "index_tokens_on_hashed_and_project_id"
   add_index "tokens", ["raw", "project_id"], :name => "index_tokens_on_raw_and_project_id"
 

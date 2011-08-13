@@ -9,7 +9,7 @@ class TranslationsController < InheritedResources::Base
       includes(:token).where(:locale_id => params[:locale_id])
     if params[:filter]
       @translations = @translations.
-        where("content #{like} ? OR tokens.raw #{like} ?",
+        where("content #{like} ? OR (tokens.full_key #{like} ? AND content IS NOT NULL)",
               "%#{params[:filter]}%", "%#{params[:filter]}%")
     end
   end

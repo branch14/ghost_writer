@@ -6,6 +6,32 @@ require 'spec_helper'
 
 describe TranslationsController do
 
+  include Devise::TestHelpers
+
+  before(:each) do
+    @user = Factory(:user)
+    sign_in @user
+  end
+
+  describe "GET index" do
+    it "should render" do
+      get :index
+      response.should be_success
+    end
+  end
+
+  # TODO...
+  describe "GET index with filter" do
+    it "should filter hits" do
+      project = Factory(:project)
+      locale = project.locales.create :code => 'en'
+      #project.tokens.create :...
+      get :index, :locale_id => locale.id, :filter => "world"
+      response.should be_success
+      #assigns(:translations).should ...
+    end
+  end
+
   # def mock_translation(stubs={})
   #   @mock_translation ||= mock_model(Translation, stubs).as_null_object
   # end

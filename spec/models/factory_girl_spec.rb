@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "FactoryGirl" do
 
-  describe "factoryies" do
+  describe "factories" do
     specify { Factory.build(:project).should be_valid }
     specify { Factory.build(:locale).should be_valid }
     specify { Factory.build(:token).should be_valid }
