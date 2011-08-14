@@ -25,25 +25,25 @@ describe Project do
 
     it 'should handle missed' do
       data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
-      expect { project.handle_missed2!(:data => data) }.to change(Token, :count).by(4)
+      expect { project.handle_missed!(:data => data) }.to change(Token, :count).by(4)
     end
 
     it 'should properly build aggregated translations' do
       data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test."}}}}}
-      project.handle_missed2!(:data => data)
-      project.aggregated_translations2.should eq(expected)
+      project.handle_missed!(:data => data)
+      project.aggregated_translations.should eq(expected)
 
       data = {"this.is.a.2nd_test" => {"default"=>{"en"=>"Hello world."}, "count"=>{"en"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test.",
                                                        "2nd_test" => "Hello world."}}}}}
-      project.handle_missed2!(:data => data)
-      project.aggregated_translations2.should eq(expected)
+      project.handle_missed!(:data => data)
+      project.aggregated_translations.should eq(expected)
     end
 
     it 'should handle missed from json file' do
       data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
-      expect { project.handle_missed2! :json => data.to_json }.to change(Token, :count).by(4)
+      expect { project.handle_missed! :json => data.to_json }.to change(Token, :count).by(4)
     end
 
     it 'should nicely find or create tokens by full key' do

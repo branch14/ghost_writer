@@ -10,7 +10,6 @@ end
 
 Factory.define :token do |f|
   f.association :project
-  f.raw 'this.is.a.test'
 end
 
 Factory.define :translation do |f|

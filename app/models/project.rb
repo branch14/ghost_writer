@@ -28,7 +28,7 @@ class Project < ActiveRecord::Base
     Locale.available.reject { |key, value| codes.include? key }
   end
 
-  def aggregated_translations2(locales=nil)
+  def aggregated_translations(locales=nil)
     locales ||= self.locales
     locales.inject({}) do |result, locale|
       tree = tokens.roots.inject({}) do |provis, root|
@@ -38,36 +38,12 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # TODO this will go after migration to ancestry
-  def aggregated_translations
-    # assumption everything has been loaded eagerly
-    locales.inject({}) do |result, locale|
-      tokens.inject(result) do |provis, token|
-        translation = token.translations.select { |t| t.locale_id == locale.id }.first
-        if !translation.nil? and translation.active?
-          provis.deep_merge nesting(locale.code, token.raw, translation.content)
-        else
-          provis
-        end
-      end
-    end
-  end
-
   def new_snapshot_name
     time = I18n.l Time.now, :format => :filename
     name = "translations_%s_%s.yml" % [ permalink, time ]
     File.join SNAPSHOT_PATH, name
   end
   
-  # TODO this will go after migration to ancestry
-  def log(msg)
-    if @log.nil?
-      @log = File.open(File.join(Rails.root, %w(log import.log)), 'a')
-      @log.sync = true
-    end
-    @log.puts msg
-  end
-
   def find_or_create_tokens(full_key)
     parent = tokens
     keys = full_key.split '.'
@@ -83,51 +59,11 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # TODO this will go after migration to ancestry
-  def handle_missed!(filename)
-    log "PROCESSING: #{filename}"
-    data = File.open(filename, 'r').read
-    missed = JSON.parse(data)  
-    #File.open(filename.sub('.json', '.yaml'), 'w') { |f| f.puts missed.to_yaml }
-    missed.each do |key, val|
-      token = self.tokens.where(:raw => key).first
-      if token.nil?
-        token = self.tokens.create(:raw => key)
-        token.translations.each do |translation|
-          #attrs = { :hits => val['count'][translation.locale.code] }
-          content = val['default'][translation.locale.code] unless val['default'].nil?
-          content = val[:default][translation.locale.code] unless val[:default].nil?
-          content ||= key
-          #attrs[:content] = content unless content.nil?
-          #translation.reload
-          translation.content = content
-          translation.miss_counter = val['count'][translation.locale.code]
-          translation.save!
-          log "NEW #{translation.locale.code}.#{key} => #{content}"
-          unless translation.content == content
-            log "ERROR"
-            log val.to_yaml
-          end
-        end
-      else
-        token.translations.each do |translation|
-          miss_counter = (translation.miss_counter || 0) + val['count'][translation.locale.code].to_i
-          attrs = {}
-          attrs[:miss_counter] = miss_counter
-          content = val['default'][translation.locale.code] unless val['default'].nil?
-          attrs[:content] = content unless content.nil?
-          translation.update_attributes attrs
-          log "UPDATE #{translation.locale.code}.#{key} => #{miss_counter} - #{content}"
-        end
-      end
-    end
-  end
-
   # options has one and only one of...
   #  * :filename 
   #  * :json a JSON String
   #  * :data a Hash
-  def handle_missed2!(options)
+  def handle_missed!(options)
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
     raise "no data supplied" if options[:data].nil? or options[:data].empty?
@@ -156,12 +92,6 @@ class Project < ActiveRecord::Base
           token.translation_for(locale).content : strip_down(value, locale)
       end
     end
-  end
-
-  # TODO this has do go
-  def nesting(locale, token, translation)
-    keys = (token.split('.').reverse << locale)
-    keys.inject(translation) { |result, key| { key => result } }
   end
 
   def perform_reset_translations!

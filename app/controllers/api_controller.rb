@@ -10,7 +10,7 @@ class ApiController < ApplicationController
   def single_post
     filename = next_filename
     File.open(filename, 'w') { |f| f.puts params[:miss] }
-    @project.delay.handle_missed2!(:filename => filename)
+    @project.delay.handle_missed!(:filename => filename)
     send_yaml
   end
 
@@ -38,7 +38,7 @@ class ApiController < ApplicationController
   end
 
   def send_yaml
-    send_data @project.aggregated_translations2.to_yaml,
+    send_data @project.aggregated_translations.to_yaml,
       :type => 'application/x-yaml', :filename => 'translations.yml'
   end
 

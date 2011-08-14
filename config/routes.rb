@@ -3,7 +3,6 @@ ProjectZero::Application.routes.draw do
   #resources :assignments
   resources :documents
   resources :snapshots
-
   devise_for :users
 
   resources :projects do
@@ -12,10 +11,9 @@ ProjectZero::Application.routes.draw do
   end
 
   resources :translations
-
   resources :jobs
 
-  get '/api/:project_id/:locale_code/:token_raw' => 'api#simple'
+  # get '/api/:project_id/:locale_code/:token_raw' => 'api#simple'
 
   post '/api/:project_id' => 'api#single_post'
   get '/api/:project_id' => 'api#single_get'

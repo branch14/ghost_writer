@@ -5,7 +5,7 @@ class Translation < ActiveRecord::Base
   belongs_to :locale
   belongs_to :token
 
-  delegate :raw, :to => :token
+  delegate :full_key, :to => :token
   delegate :code, :to => :locale
 
   #validates :locale, :presence => true
@@ -27,7 +27,7 @@ class Translation < ActiveRecord::Base
   #end
 
   def set_activation!
-    self.active = ( content != raw )
+    self.active = ( content != full_key )
     # see http://apidock.com/rails/ActiveRecord/RecordNotSaved
     nil
   end

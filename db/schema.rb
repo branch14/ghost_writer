@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110809093445) do
+ActiveRecord::Schema.define(:version => 20110814111111) do
 
   create_table "assignments", :force => true do |t|
     t.integer  "user_id"
@@ -85,8 +85,6 @@ ActiveRecord::Schema.define(:version => 20110809093445) do
   end
 
   create_table "tokens", :force => true do |t|
-    t.string   "raw"
-    t.string   "hashed"
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -96,22 +94,24 @@ ActiveRecord::Schema.define(:version => 20110809093445) do
     t.integer  "ancestry_depth"
     t.string   "key"
     t.string   "full_key"
+    t.text     "annotation"
   end
 
   add_index "tokens", ["ancestry"], :name => "index_tokens_on_ancestry"
   add_index "tokens", ["ancestry_depth"], :name => "index_tokens_on_depth"
-  add_index "tokens", ["hashed", "project_id"], :name => "index_tokens_on_hashed_and_project_id"
-  add_index "tokens", ["raw", "project_id"], :name => "index_tokens_on_raw_and_project_id"
+  add_index "tokens", ["full_key"], :name => "index_tokens_on_full_key"
+  add_index "tokens", ["project_id"], :name => "index_tokens_on_hashed_and_project_id"
+  add_index "tokens", ["project_id"], :name => "index_tokens_on_raw_and_project_id"
 
   create_table "translations", :force => true do |t|
     t.text     "content",      :limit => 255
-    t.integer  "hits_counter"
+    t.integer  "hits_counter",                :default => 0
     t.integer  "token_id"
     t.integer  "locale_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",                      :default => true
-    t.integer  "miss_counter"
+    t.integer  "miss_counter",                :default => 0
   end
 
   add_index "translations", ["content", "locale_id"], :name => "index_translations_on_content_and_locale_id"
