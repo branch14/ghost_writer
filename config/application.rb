@@ -41,6 +41,8 @@ module ProjectZero
     config.filter_parameters += [:password]
 
     config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
+
+    config.assets.enabled = true
   end
 end
 

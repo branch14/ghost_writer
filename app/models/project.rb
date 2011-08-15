@@ -103,4 +103,8 @@ class Project < ActiveRecord::Base
     translations.each &:reset_counters!
   end
 
+  def set_api_key
+    self.api_key = Digest::MD5.hexdigest(created_at.to_s + permalink)
+  end
+
 end

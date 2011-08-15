@@ -1,9 +1,10 @@
 -content_for :scripts do
   =javascript_include_tag 'jquery.purr'
   =javascript_include_tag 'best_in_place' 
+  -#=javascript_include_tag 'locale'
+  =javascript_include_tag 'jquery.delayed_observer'
   :javascript
     $(document).ready(function() { $(".best_in_place").best_in_place() });
-  =javascript_include_tag 'jquery.delayed_observer'
   :javascript
     $(document).ready(function() {
       $('#filter').delayedObserver(0.5, function(value, object) {
