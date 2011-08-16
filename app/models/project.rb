@@ -44,6 +44,7 @@ class Project < ActiveRecord::Base
     File.join SNAPSHOT_PATH, name
   end
   
+  # returns the found or created tokens, the leaf is last
   def find_or_create_tokens(full_key)
     parent = tokens
     keys = full_key.split '.'
@@ -66,7 +67,7 @@ class Project < ActiveRecord::Base
   def handle_missed!(options)
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
-    raise "no data supplied" if options[:data].nil? or options[:data].empty?
+    raise "no data supplied" if options[:data].blank?
     options[:data].each do |key, val|
       token = find_or_create_tokens(key).last
       token.update_or_create_all_translations(normalize_attributes(val))
@@ -77,7 +78,7 @@ class Project < ActiveRecord::Base
   def normalize_attributes(attrs)
     locales.map(&:code).inject({}) do |result, code|
       result.merge code => {
-        'content' => attrs['default'][code],
+        'content'      => attrs['default'][code],
         'miss_counter' => attrs['count'][code]
       }
     end
@@ -88,7 +89,7 @@ class Project < ActiveRecord::Base
   def strip_down(tree, locale)
     Hash.new.tap do |result|
       tree.each do |token, value|
-        logger.info "> Token.find(#{token.id}).translation_for(#{locale.inspect})" if value.empty?
+        #logger.info "> Token.find(#{token.id}).translation_for(#{locale.inspect})" if value.empty?
         result[token.key] = value.empty? ?
           token.translation_for(locale).content : strip_down(value, locale)
       end
