@@ -63,6 +63,12 @@ describe Project do
       project.aggregated_translations.should eq(expected)
     end
 
+    it 'should nicly handly json' do
+      json = "{\"share\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.next\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.play\":{\"count\":{\"pt\":1,\"en\":1}},\"nested_profiles.profiles.about.about\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.previous\":{\"count\":{\"pt\":1,\"en\":1}}}"
+      # TODO should not throw an error
+      project.handle_missed!(:json => json)
+    end
+
     #pending "should provide a list of remaining locales" do
     #end
 
