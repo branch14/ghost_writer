@@ -88,6 +88,7 @@ class Project < ActiveRecord::Base
   def strip_down(tree, locale)
     Hash.new.tap do |result|
       tree.each do |token, value|
+        logger.info "> Token.find(#{token.id}).translation_for(#{locale.inspect})" if value.empty?
         result[token.key] = value.empty? ?
           token.translation_for(locale).content : strip_down(value, locale)
       end
