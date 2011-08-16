@@ -55,6 +55,14 @@ describe Project do
       tokens.map(&:full_key).should eq(%w(this this.is this.is.a this.is.a.test))
     end
 
+    it 'should suppress inactive translations' do
+      tokens = project.find_or_create_tokens('this.is.a.test')
+      tokens.last.update_or_create_all_translations
+      # FIXME should be empty
+      expected = {'en' => {'this' => {'is' => {'a' => {}}}}}
+      project.aggregated_translations.should eq(expected)
+    end
+
     #pending "should provide a list of remaining locales" do
     #end
 

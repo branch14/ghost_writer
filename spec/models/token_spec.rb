@@ -2,6 +2,20 @@ require 'spec_helper'
 
 describe Token do
 
+  context 'given a root token' do
+    let(:token) { Factory(:token) }
+    it 'should nicely set the full_key' do
+      token.full_key.should eq(token.key)
+    end
+  end
+
+  context 'given a deeply nested token' do
+    let(:token) { Factory(:project).find_or_create_tokens('deeply.nested.token').last }
+    it 'should nicely set the full_key' do
+      token.full_key.should eq('deeply.nested.token')
+    end
+  end
+
   context 'given a token with two translations' do
     let(:token) do
       Factory(:token).tap do |token|

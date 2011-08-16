@@ -11,9 +11,10 @@ class Token < ActiveRecord::Base
   has_ancestry :cache_depth => true
   
   validates :project, :presence => true
+  validates :key, :presence => true #format...
+  #validates :full_key, :presence => true #format...
 
-  # FIXME this doesn't work
-  # before_save :update_full_key, :if => proc { |t| t.ancestry_changed? || t.new_record? }
+  before_save :set_full_key
 
   # performs a three way merge of...
   #  * existing translations
@@ -57,7 +58,7 @@ class Token < ActiveRecord::Base
     translations.where(:locale_id => locale.id).first
   end
 
-  def update_full_key
+  def set_full_key
     self.full_key = (ancestors.map(&:key) << key) * '.'
   end
 

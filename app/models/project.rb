@@ -53,7 +53,7 @@ class Project < ActiveRecord::Base
         token = parent.at_depth(index).where(:key => key).first
         # FIXME use before_save callback
         # token ||= parent.create!(:key => key, :project => self)
-        token ||= parent.build(:key => key, :project => self).tap { |t| t.update_full_key; t.save! }
+        token ||= parent.build(:key => key, :project => self).tap { |t| t.set_full_key; t.save! }
         tokens << token
         parent = token.children
       end
@@ -86,12 +86,22 @@ class Project < ActiveRecord::Base
 
   private
 
+  # FIXME remove empty branches
   def strip_down(tree, locale)
     Hash.new.tap do |result|
       tree.each do |token, value|
-        #logger.info "> Token.find(#{token.id}).translation_for(#{locale.inspect})" if value.empty?
-        result[token.key] = value.empty? ?
-          token.translation_for(locale).content : strip_down(value, locale)
+        if value.blank?
+          translation = token.translation_for(locale)
+          # FIXME translation.nil? cases
+          if !translation.nil? && translation.active
+            result[token.key] = translation.content
+          end
+        else
+          result[token.key] = strip_down(value, locale)
+        end
+        ##logger.info "> Token.find(#{token.id}).translation_for(#{locale.inspect})" if value.empty?
+        #result[token.key] = value.empty? ?
+        #  token.translation_for(locale).content : strip_down(value, locale)
       end
     end
   end

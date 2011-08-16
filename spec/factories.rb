@@ -10,6 +10,7 @@ end
 
 Factory.define :token do |f|
   f.association :project
+  f.key 'sample_token'
 end
 
 Factory.define :translation do |f|
