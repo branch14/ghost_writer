@@ -13,10 +13,13 @@ Token.all.each { |t| t.update_or_create_all_translations if t.is_childless? }; n
 Set full_keys of all tokens
 ---------------------------
 
+Token.where(:key => nil).each { |t| t.update_attribute(:key, t.raw) }; nil
+# deleted some garbled ones
+
 Token.all.each { |t| t.send(:set_full_key); t.save! }; nil
 
 
 Set all translations in/active
 ------------------------------
 
-Translations.include(:token).all.each { |t| t.send(:set_active); t.save! }; nil
+Translation.all.each { |t| t.send(:set_active); t.save! }; nil
