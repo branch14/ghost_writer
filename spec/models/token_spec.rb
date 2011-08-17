@@ -25,10 +25,6 @@ describe Token do
         token.translations.create :locale => locale_de, :content => 'asdf (de)'
       end
     end
-    # it 'should provide translations attributes as a hash' do
-    #   token.translations_attributes.should be_instance_of(Hash)
-    #   token.translations_attributes.values.size.should eq(2)
-    # end
     it 'should provide translations by code as a hash' do
       tbc = token.translations_by_code
       tbc.should be_instance_of(Hash)
@@ -55,12 +51,35 @@ describe Token do
       token.update_or_create_all_translations
       token.should have(0).missing_locales
     end
-    it 'should threeway merge attributes provided' do
-      # attrs = {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}
+  end
+
+  context 'given a token with an inactive translation' do
+    let(:token) do
+      Factory(:token).tap do |token|
+        locale = token.project.locales.create! :code => 'en'
+        token.translations.create! :locale_id => locale.id, :content => ''
+      end
+    end
+    it 'should do a threeway merge with attributes provided' do
       attrs = {"en" => {"content" => "This is a test.", "count" => 1}}
       translations = token.update_or_create_all_translations(attrs)
       translation_en = translations.select { |t| t.code == 'en' } .first
       translation_en.content.should eq("This is a test.")
+    end
+  end
+
+  context 'given a token with an active translation' do
+    let(:token) do
+      Factory(:token).tap do |token|
+        locale = token.project.locales.create :code => 'en'
+        token.translations.create! :locale_id => locale.id, :content => 'Original content.'
+      end
+    end
+    it 'should prohibit a threeway merge with attributes provided' do
+      attrs = {"en" => {"content" => "This is a test.", "count" => 1}}
+      translations = token.update_or_create_all_translations(attrs)
+      translation_en = translations.select { |t| t.code == 'en' } .first
+      translation_en.content.should eq("Original content.")
     end
   end
 

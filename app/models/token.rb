@@ -22,11 +22,14 @@ class Token < ActiveRecord::Base
   #  * attributes provided
   def update_or_create_all_translations(attributes={})
     missing_locales.each { |locale| translations.build :locale => locale }
-    attributes.each do |code, attr|
-      merger = translations_by_code[code].attributes.merge attr
-      translations_by_code[code].attributes = merger
+    translations.each do |translation|
+      attrs = attributes[translation.code]
+      unless translation.active? or attrs.nil?
+        merger = translation.attributes.merge attrs
+        translation.attributes = merger
+      end
+      translation.save!
     end
-    translations_by_code.values.tap { |translations| translations.each(&:save!) } 
   end
 
   # returns a hash 

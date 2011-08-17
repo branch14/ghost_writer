@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110814111111) do
+ActiveRecord::Schema.define(:version => 20110817101929) do
 
   create_table "assignments", :force => true do |t|
     t.integer  "user_id"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20110814111111) do
     t.string   "permalink"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "api_key"
   end
 
   add_index "projects", ["permalink"], :name => "index_projects_on_permalink"
@@ -110,7 +111,7 @@ ActiveRecord::Schema.define(:version => 20110814111111) do
     t.integer  "locale_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                      :default => true
+    t.boolean  "active",                      :default => false
     t.integer  "miss_counter",                :default => 0
   end
 

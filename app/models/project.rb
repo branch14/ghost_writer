@@ -77,10 +77,15 @@ class Project < ActiveRecord::Base
   # TODO adjust this method to incoming data
   def normalize_attributes(attrs)
     locales.map(&:code).inject({}) do |result, code|
-      result.merge code => {
-        'content'      => attrs['default'] && attrs['default'][code],
-        'miss_counter' => attrs['count']   && attrs['count'][code]
-      }
+      result.tap do |provis|
+        provis[code] = {}
+        if attrs['default'] && !attrs['default'][code].blank?
+          provis[code]['content'] = attrs['default'][code] 
+        end
+        if attrs['count'] && !attrs['count'][code].blank?
+          provis[code]['miss_counter'] = attrs['count'][code]
+        end
+      end
     end
   end
 

@@ -4,7 +4,11 @@ describe Project do
 
   context "given a valid project with one locale" do 
 
-    let(:project) { Factory(:project).tap { |p| p.locales.create :code => 'en' } }
+    let(:project) do
+      Factory(:project).tap do |project|
+        project.locales.create :code => 'en'
+      end
+    end
 
     it "should be valid" do
       project.should be_valid
@@ -32,6 +36,7 @@ describe Project do
       data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test."}}}}}
       project.handle_missed!(:data => data)
+      project.find_or_create_tokens('this.is.a.test').last.translations.first.should be_active
       project.aggregated_translations.should eq(expected)
 
       data = {"this.is.a.2nd_test" => {"default"=>{"en"=>"Hello world."}, "count"=>{"en"=>1}}}
