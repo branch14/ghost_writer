@@ -2,6 +2,11 @@ class Project < ActiveRecord::Base
 
   SNAPSHOT_PATH = File.join Rails.root, %w(public system snapshots)
 
+  GHOSTREADER_MAPPING = {
+    :default => :content,
+    :count => :miss_counter
+  }
+
   attr_accessor :reset_translations, :reset_counters
   attr_accessible :title, :permalink, :locales_attributes,
                   :reset_translations, :reset_counters
@@ -17,7 +22,7 @@ class Project < ActiveRecord::Base
 
   validates :title, :presence => true
   validates :permalink, :presence => true,
-    :format => { :with => /[:alphanum:-]+/ },
+    :format => { :with => /\A[\w-]+\z/ },
     :length => { :minimum => 4 }
 
   after_update :perform_reset_translations!, :if => :reset_translations
@@ -60,10 +65,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # options has one and only one of...
+  # options should have exactly one of...
   #  * :filename 
-  #  * :json a JSON String
-  #  * :data a Hash
+  #  * :json (a JSON String)
+  #  * :data (a Hash)
   def handle_missed!(options)
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
@@ -79,11 +84,10 @@ class Project < ActiveRecord::Base
     locales.map(&:code).inject({}) do |result, code|
       result.tap do |provis|
         provis[code] = {}
-        if attrs['default'] && !attrs['default'][code].blank?
-          provis[code]['content'] = attrs['default'][code] 
-        end
-        if attrs['count'] && !attrs['count'][code].blank?
-          provis[code]['miss_counter'] = attrs['count'][code]
+        GHOSTREADER_MAPPING.each do |key, value|
+          if attrs[key.to_s] && !attrs[key.to_s][code].blank?
+            provis[code][value.to_s] = attrs[key.to_s][code]
+          end
         end
       end
     end
@@ -104,9 +108,6 @@ class Project < ActiveRecord::Base
         else
           result[token.key] = strip_down(value, locale)
         end
-        ##logger.info "> Token.find(#{token.id}).translation_for(#{locale.inspect})" if value.empty?
-        #result[token.key] = value.empty? ?
-        #  token.translation_for(locale).content : strip_down(value, locale)
       end
     end
   end

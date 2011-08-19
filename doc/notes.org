@@ -23,3 +23,14 @@ Set all translations in/active
 ------------------------------
 
 Translation.all.each { |t| t.send(:set_active); t.save! }; nil
+
+
+
+Interfacing with translation suppliers
+--------------------------------------
+
+* http://en.wikipedia.org/wiki/Translation_memory#Translation_memory_and_related_standards
+* http://en.wikipedia.org/wiki/Translation_Memory_eXchange
+* http://www.gala-global.org/oscarStandards/tmx/tmx14b.html'
+* http://en.wikipedia.org/wiki/XLIFF
+* http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html

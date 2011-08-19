@@ -11,8 +11,7 @@ class Token < ActiveRecord::Base
   has_ancestry :cache_depth => true
   
   validates :project, :presence => true
-  validates :key, :presence => true #format...
-  #validates :full_key, :presence => true #format...
+  validates :key, :presence => true, :format => { :with => /\A[\w-]+\z/ }
 
   before_save :set_full_key
 
@@ -30,11 +29,6 @@ class Token < ActiveRecord::Base
       end
       translation.save!
     end
-  end
-
-  # returns a hash 
-  def translations_by_code
-    translations.inject({}) { |result, t| result.merge t.code => t }
   end
 
   def hits_counter
@@ -57,6 +51,7 @@ class Token < ActiveRecord::Base
     end
   end
 
+  # returns a translation
   def translation_for(locale)
     translations.where(:locale_id => locale.id).first
   end

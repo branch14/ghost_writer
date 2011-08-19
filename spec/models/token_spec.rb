@@ -25,11 +25,6 @@ describe Token do
         token.translations.create :locale => locale_de, :content => 'asdf (de)'
       end
     end
-    it 'should provide translations by code as a hash' do
-      tbc = token.translations_by_code
-      tbc.should be_instance_of(Hash)
-      tbc.keys.sort.should eq(%w(de en))
-    end
   end
 
   context 'given a token with two missing translations' do
