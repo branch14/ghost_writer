@@ -11,9 +11,9 @@ class Token < ActiveRecord::Base
   has_ancestry :cache_depth => true
   
   validates :project, :presence => true
+  validates :key, :presence => true, :format => { :with => /\A[\w-]+\z/ }
 
-  # FIXME this doesn't work
-  # before_save :update_full_key, :if => proc { |t| t.ancestry_changed? || t.new_record? }
+  before_save :set_full_key
 
   # performs a three way merge of...
   #  * existing translations
@@ -21,16 +21,14 @@ class Token < ActiveRecord::Base
   #  * attributes provided
   def update_or_create_all_translations(attributes={})
     missing_locales.each { |locale| translations.build :locale => locale }
-    attributes.each do |code, attr|
-      merger = translations_by_code[code].attributes.merge attr
-      translations_by_code[code].attributes = merger
+    translations.each do |translation|
+      attrs = attributes[translation.code]
+      unless translation.active? or attrs.nil?
+        merger = translation.attributes.merge attrs
+        translation.attributes = merger
+      end
+      translation.save!
     end
-    translations_by_code.values.tap { |translations| translations.each(&:save!) } 
-  end
-
-  # returns a hash 
-  def translations_by_code
-    translations.inject({}) { |result, t| result.merge t.code => t }
   end
 
   def hits_counter
@@ -53,11 +51,12 @@ class Token < ActiveRecord::Base
     end
   end
 
+  # returns a translation
   def translation_for(locale)
     translations.where(:locale_id => locale.id).first
   end
 
-  def update_full_key
+  def set_full_key
     self.full_key = (ancestors.map(&:key) << key) * '.'
   end
 

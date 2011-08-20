@@ -2,6 +2,11 @@ class Project < ActiveRecord::Base
 
   SNAPSHOT_PATH = File.join Rails.root, %w(public system snapshots)
 
+  GHOSTREADER_MAPPING = {
+    :default => :content,
+    :count => :miss_counter
+  }
+
   attr_accessor :reset_translations, :reset_counters
   attr_accessible :title, :permalink, :locales_attributes,
                   :reset_translations, :reset_counters
@@ -17,7 +22,7 @@ class Project < ActiveRecord::Base
 
   validates :title, :presence => true
   validates :permalink, :presence => true,
-    :format => { :with => /[:alphanum:-]+/ },
+    :format => { :with => /\A[\w-]+\z/ },
     :length => { :minimum => 4 }
 
   after_update :perform_reset_translations!, :if => :reset_translations
@@ -44,6 +49,7 @@ class Project < ActiveRecord::Base
     File.join SNAPSHOT_PATH, name
   end
   
+  # returns the found or created tokens, the leaf is last
   def find_or_create_tokens(full_key)
     parent = tokens
     keys = full_key.split '.'
@@ -52,21 +58,21 @@ class Project < ActiveRecord::Base
         token = parent.at_depth(index).where(:key => key).first
         # FIXME use before_save callback
         # token ||= parent.create!(:key => key, :project => self)
-        token ||= parent.build(:key => key, :project => self).tap { |t| t.update_full_key; t.save! }
+        token ||= parent.build(:key => key, :project => self).tap { |t| t.set_full_key; t.save! }
         tokens << token
         parent = token.children
       end
     end
   end
 
-  # options has one and only one of...
+  # options should have exactly one of...
   #  * :filename 
-  #  * :json a JSON String
-  #  * :data a Hash
+  #  * :json (a JSON String)
+  #  * :data (a Hash)
   def handle_missed!(options)
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
-    raise "no data supplied" if options[:data].nil? or options[:data].empty?
+    raise "no data supplied" if options[:data].blank?
     options[:data].each do |key, val|
       token = find_or_create_tokens(key).last
       token.update_or_create_all_translations(normalize_attributes(val))
@@ -76,20 +82,32 @@ class Project < ActiveRecord::Base
   # TODO adjust this method to incoming data
   def normalize_attributes(attrs)
     locales.map(&:code).inject({}) do |result, code|
-      result.merge code => {
-        'content' => attrs['default'][code],
-        'miss_counter' => attrs['count'][code]
-      }
+      result.tap do |provis|
+        provis[code] = {}
+        GHOSTREADER_MAPPING.each do |key, value|
+          if attrs[key.to_s] && !attrs[key.to_s][code].blank?
+            provis[code][value.to_s] = attrs[key.to_s][code]
+          end
+        end
+      end
     end
   end
 
   private
 
+  # FIXME remove empty branches
   def strip_down(tree, locale)
     Hash.new.tap do |result|
       tree.each do |token, value|
-        result[token.key] = value.empty? ?
-          token.translation_for(locale).content : strip_down(value, locale)
+        if value.blank?
+          translation = token.translation_for(locale)
+          # FIXME translation.nil? cases
+          if !translation.nil? && translation.active
+            result[token.key] = translation.content
+          end
+        else
+          result[token.key] = strip_down(value, locale)
+        end
       end
     end
   end

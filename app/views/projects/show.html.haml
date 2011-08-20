@@ -1,11 +1,11 @@
 %h1
   =@project.title
   &mdash;
-  =t('.locale_count')
   =@project.locales.count
+  =t('.locale_count')
   &mdash;
-  =t('.token_count')
   =@project.tokens.count
+  =t('.token_count')
 
 =link_to t(:edit), edit_resource_path(@project)
 
@@ -44,14 +44,27 @@
         %td=l snapshot.created_at, :format => :short
 
 %h2=t('.reset')
-
 =form_for @project do |pf|
   =hidden_field_tag 'project[reset_counters]', '1'
   =pf.submit t('.reset_counters'), :confirm => t('are_you_sure')
   =t('reset_counters_warning')
-
 =form_for @project do |pf|
   =hidden_field_tag 'project[reset_translations]', '1'
   =pf.submit t('.reset_translations'), :confirm => t('are_you_sure')
   =t('reset_translations_warning')
+
+-@lastlog_count = 5
+%h2=t('.lastlog', :count => @lastlog_count)
+%ul
+  -@project.tokens.includes(:translations).where('translations.active' => true).order('translations.updated_at DESC').limit(@lastlog_count).each do |token|
+    %li
+      =token.full_key
+      %ul
+        -token.translations.each do |translation|
+          %li
+            =l(translation.updated_at, :format => :short)
+            ==#{translation.code}:
+            %b== "#{translation.content}"
+
+
 

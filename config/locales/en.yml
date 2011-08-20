@@ -19,6 +19,7 @@ en:
       reset_counters: Reset Counters
       reset: Reset
       locales: Locales
+      lastlog: Last %{count} Changes
     index:
       title: Title
 

@@ -4,7 +4,11 @@ describe Project do
 
   context "given a valid project with one locale" do 
 
-    let(:project) { Factory(:project).tap { |p| p.locales.create :code => 'en' } }
+    let(:project) do
+      Factory(:project).tap do |project|
+        project.locales.create :code => 'en'
+      end
+    end
 
     it "should be valid" do
       project.should be_valid
@@ -32,6 +36,7 @@ describe Project do
       data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test."}}}}}
       project.handle_missed!(:data => data)
+      project.find_or_create_tokens('this.is.a.test').last.translations.first.should be_active
       project.aggregated_translations.should eq(expected)
 
       data = {"this.is.a.2nd_test" => {"default"=>{"en"=>"Hello world."}, "count"=>{"en"=>1}}}
@@ -53,6 +58,20 @@ describe Project do
       tokens.map(&:ancestry_depth).should eq([0, 1, 2, 3])
       tokens.map(&:ancestry).should eq([nil] + %w(1 1/2 1/2/3))
       tokens.map(&:full_key).should eq(%w(this this.is this.is.a this.is.a.test))
+    end
+
+    it 'should suppress inactive translations' do
+      tokens = project.find_or_create_tokens('this.is.a.test')
+      tokens.last.update_or_create_all_translations
+      # FIXME should be empty
+      expected = {'en' => {'this' => {'is' => {'a' => {}}}}}
+      project.aggregated_translations.should eq(expected)
+    end
+
+    it 'should nicly handly json' do
+      json = "{\"share\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.next\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.play\":{\"count\":{\"pt\":1,\"en\":1}},\"nested_profiles.profiles.about.about\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.previous\":{\"count\":{\"pt\":1,\"en\":1}}}"
+      # TODO should not throw an error
+      project.handle_missed!(:json => json)
     end
 
     #pending "should provide a list of remaining locales" do
