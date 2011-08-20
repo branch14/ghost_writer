@@ -4,6 +4,7 @@
   %head
     %title GhostWriter
     =stylesheet_link_tag :application
+    =routing_based_stylesheets
     =csrf_meta_tag
     %meta{'charset' => 'utf-8'}/
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}/
@@ -16,4 +17,5 @@
       = yield
 
     =javascript_include_tag :application
-    =content_for :scripts
+    =routing_based_javascripts
+    -#=content_for :scripts
