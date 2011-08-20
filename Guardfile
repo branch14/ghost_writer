@@ -7,9 +7,9 @@ guard 'bundler' do
   # watch(/^.+\.gemspec/)
 end
 
-guard 'compass' do
-  watch(/^src\/(.*)\.s[ac]ss/)
-end
+#guard 'compass' do
+#  watch(/^src\/(.*)\.s[ac]ss/)
+#end
 
 guard 'rspec', :version => 2 do
   watch(/^spec\/(.*)_spec.rb/)
