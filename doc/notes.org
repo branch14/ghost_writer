@@ -25,6 +25,11 @@ Set all translations in/active
 Translation.all.each { |t| t.send(:set_active); t.save! }; nil
 
 
+Delete some failed jobs
+-----------------------
+
+delete from delayed_jobs where last_error LIKE '{no data supplied%';
+
 
 Interfacing with translation suppliers
 --------------------------------------

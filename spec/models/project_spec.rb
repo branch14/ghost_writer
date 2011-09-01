@@ -81,4 +81,35 @@ describe Project do
     #end
 
   end
+
+  context 'given a project with some data' do
+
+    let(:project) do
+      Factory(:project).tap do |project|
+        en = project.locales.create :code => 'en'
+        de = project.locales.create :code => 'de'
+        token0 = project.find_or_create_tokens('this.is.a.test').last
+        token1 = project.find_or_create_tokens('this.is.another.test').last
+        token0.update_or_create_all_translations({
+          'en' => { 'content' => 'This is a test.' },
+          'de' => { 'content' => 'Dies ist ein Test.' }
+        })
+        token1.update_or_create_all_translations({
+          'en' => { 'content' => 'This is another test.' },
+          'de' => { 'content' => 'Dies ist ein anderer Test, mit Komma.' }
+        })
+      end
+    end
+
+    # http://tools.ietf.org/html/rfc4180
+    it 'should nicely boil down to csv' do
+      expected = <<-EOB
+this.is.a.test,"This is a test.","Dies ist ein Test."
+this.is.another.test,"This is another test.","Dies ist ein anderer Test, mit Komma."
+      EOB
+      project.to_csv.should eq(expected)
+    end
+
+  end
+
 end

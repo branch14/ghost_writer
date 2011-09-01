@@ -43,6 +43,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def to_csv
+    tokens.reject(&:has_children?).map do |token|
+      [ token.full_key,
+        locales.map do |locale|
+          '"%s"' % token.translation_for(locale).content
+        end ] * ','
+    end * "\n" + "\n"
+  end
+
   def new_snapshot_name
     time = I18n.l Time.now, :format => :filename
     name = "translations_%s_%s.yml" % [ permalink, time ]
