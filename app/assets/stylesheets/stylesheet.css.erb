@@ -1,5 +1,7 @@
+<% backgroundcolor = Rails.env == 'development' ? 'pink' : '#4B7399' %>
+
 body {
-  background: #4B7399 url(<%= asset_path 'ghostwriter_logo.png' %>) no-repeat 10px 4px;
+  background: <%= backgroundcolor %> url(<%= asset_path 'ghostwriter_logo.png' %>) no-repeat 10px 4px;
   font-family: Verdana, Helvetica, Arial;
   font-size: 14px;
 }
