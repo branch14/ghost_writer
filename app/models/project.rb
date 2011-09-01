@@ -43,11 +43,12 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # http://tools.ietf.org/html/rfc4180
   def to_csv
     tokens.reject(&:has_children?).map do |token|
       [ token.full_key,
         locales.map do |locale|
-          '"%s"' % token.translation_for(locale).content
+          '"%s"' % token.translation_for(locale).content.gsub('"', '""')
         end ] * ','
     end * "\n" + "\n"
   end

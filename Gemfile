@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc6'
+gem 'rails', '3.1.0'
 
 group :assets do
   gem 'sass-rails'
@@ -10,7 +10,7 @@ end
 
 # gems in chronological order
 gem 'acts-as-taggable-on'
-gem 'best_in_place', :git => 'https://github.com/indrekj/best_in_place.git'
+gem 'best_in_place', :git => 'git://github.com/branch14/best_in_place.git'
 gem 'delayed_job', '2.1.4'
 gem 'exception_notification_rails3', '1.2.0', :require => 'exception_notifier'
 gem 'formtastic', '1.2.3'
@@ -50,6 +50,7 @@ group :development, :test do
   gem 'capistrano'
   gem 'capistrano-ext'
   gem 'ruby-debug'
+  gem 'launchy'
 
   # gem 'rails-footnotes', '>= 3.7'
 

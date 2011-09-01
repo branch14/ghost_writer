@@ -95,7 +95,7 @@ describe Project do
           'de' => { 'content' => 'Dies ist ein Test.' }
         })
         token1.update_or_create_all_translations({
-          'en' => { 'content' => 'This is another test.' },
+          'en' => { 'content' => 'This is a mean test, it contains a ".' },
           'de' => { 'content' => 'Dies ist ein anderer Test, mit Komma.' }
         })
       end
@@ -105,7 +105,7 @@ describe Project do
     it 'should nicely boil down to csv' do
       expected = <<-EOB
 this.is.a.test,"This is a test.","Dies ist ein Test."
-this.is.another.test,"This is another test.","Dies ist ein anderer Test, mit Komma."
+this.is.another.test,"This is a mean test, it contains a \"\".","Dies ist ein anderer Test, mit Komma."
       EOB
       project.to_csv.should eq(expected)
     end

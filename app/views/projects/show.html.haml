@@ -23,6 +23,10 @@
     -unless locale.new_record?
       %li=link_to locale.title, project_locale_path(@project, locale)
 
+%h2=t('.export')
+%ul
+  %li=link_to t('.export_csv'), project_path(@project, :format => 'csv')
+
 %h2=t('.snapshots')
 %table
   %tr

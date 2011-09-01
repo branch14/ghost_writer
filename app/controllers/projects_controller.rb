@@ -1,10 +1,14 @@
 class ProjectsController < InheritedResources::Base
 
+  respond_to :html, :csv
+
   before_filter :redirect_if_only_one_project, :only => :index
 
   def show
-    #resource.snapshots.build
-    show!
+    show! do |format|
+      format.html
+      format.csv { send_csv }
+    end
   end
 
   def create
@@ -33,6 +37,14 @@ class ProjectsController < InheritedResources::Base
       project = collection.first
       redirect_to project_locale_url(project, project.locales.first)
     end
+  end
+
+  # http://www.rfc-editor.org/rfc/rfc4180.txt
+  def send_csv
+    send_data @project.to_csv,
+      :type => 'text/csv',
+      :filename => "#{@project.permalink}.csv"
+      #:disposition => 'attachment'
   end
 
 end
