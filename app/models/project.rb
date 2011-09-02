@@ -130,6 +130,7 @@ class Project < ActiveRecord::Base
   def perform_reset_translations!
     snapshots.create!
     tokens.destroy_all
+    clear_cache!
   end
 
   def perform_reset_counters!
