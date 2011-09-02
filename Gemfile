@@ -47,10 +47,11 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'compass'
 
-  gem 'capistrano'
+  gem 'capistrano', '2.8.0'
   gem 'capistrano-ext'
   gem 'ruby-debug'
   gem 'launchy'
+  gem 'timecop'
 
   # gem 'rails-footnotes', '>= 3.7'
 
