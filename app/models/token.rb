@@ -3,6 +3,10 @@ require 'digest'
 
 class Token < ActiveRecord::Base
 
+  def self.changed_after(time)
+    self.includes(:translations).where(['translations.updated_at > ?', time])
+  end
+
   attr_accessible :project, :project_id, :key
   
   belongs_to :project
@@ -28,6 +32,13 @@ class Token < ActiveRecord::Base
         translation.attributes = merger
       end
       translation.save!
+    end
+  end
+
+  def translations_as_nested_hash
+    translations.inject({}) do |result, translation|
+      result.merge translation.locale.code => 
+        full_key.split('.').reverse.inject(translation.content) { |result, key| { key => result } }
     end
   end
 

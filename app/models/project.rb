@@ -33,9 +33,10 @@ class Project < ActiveRecord::Base
     Locale.available.reject { |key, value| codes.include? key }
   end
 
-  def aggregated_translations(locales=nil)
-    locales ||= self.locales
-    locales.inject({}) do |result, locale|
+  def aggregated_translations(options={})
+    options = { :locales => options } unless options.is_a?(Hash)
+    options[:locales] ||= self.locales
+    options[:locales].inject({}) do |result, locale|
       tree = tokens.roots.inject({}) do |provis, root|
         provis.merge strip_down(root.subtree.arrange, locale)
       end
@@ -101,6 +102,10 @@ class Project < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def clear_cache!
+    Rails.cache.write(permalink, nil)
   end
 
   private

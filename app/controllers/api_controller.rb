@@ -1,7 +1,6 @@
 class ApiController < ApplicationController
 
   before_filter :set_project!
-  caches_page :single_post
 
   def single_get
     send_yaml
@@ -38,8 +37,23 @@ class ApiController < ApplicationController
   end
 
   def send_yaml
-    send_data @project.aggregated_translations.to_yaml,
-      :type => 'application/x-yaml', :filename => 'translations.yml'
+    # read cache
+    data = Rails.cache.read(@project.permalink)
+    timestamp = request.env['If-Modified-Since']
+    unless data.blank? or timestamp.blank? # merge changes
+      tokens = @project.tokens.changed_after(timestamp)
+      data = tokens.inject(data) do |result, token|
+        result.deep_merge token.translations_as_nested_hash
+      end
+    else # fallback if no cache or no timestamp
+      data = @project.aggregated_translations
+    end
+    # write cache
+    Rails.cache.write(@project.permalink, data)
+    # set last-modified header
+    response.headers['Last-Modified'] = Time.now
+    # send data
+    send_data data.to_yaml, :type => 'application/x-yaml', :filename => 'translations.yml'
   end
 
 end

@@ -12,14 +12,21 @@ describe ApiController do
 
   describe 'POST single_post' do
     it 'should handle missed' do
-      project = Factory(:project)
-      project.locales.create :code => 'en'
-      missed = { 'this.is.a.test' => { 'count' => { 'en' => 1 },
-          'default' =>  { 'en' => 'This is a test.' } } }
 
-      Delayed::Job.all.should be_empty
-      post :single_post, :project_id => project.id ,:miss => missed.to_json
-      response.should be_success
+      back_then = 1.day.ago
+      project = nil
+
+      Timecop.freeze(back_then) do
+        project = Factory(:project)
+        project.clear_cache!
+        project.locales.create :code => 'en'
+        missed = { 'this.is.a.test' => { 'count' => { 'en' => 1 },
+            'default' =>  { 'en' => 'This is a test.' } } }
+
+        Delayed::Job.all.should be_empty
+        post :single_post, :project_id => project.id ,:miss => missed.to_json
+        response.should be_success
+      end
 
       Delayed::Job.count.should == 1
       result = Delayed::Worker.new.work_off(1)
@@ -27,7 +34,7 @@ describe ApiController do
       Delayed::Job.count.should == 0
 
       project.should have(4).tokens
-
+      
       project.tokens.at_depth(0).first.key.should eq('this')
       project.tokens.at_depth(1).first.key.should eq('is')
       project.tokens.at_depth(2).first.key.should eq('a')
@@ -39,11 +46,46 @@ describe ApiController do
       translation.locale.code.should == 'en'
       translation.content.should == 'This is a test.'
 
+      request.env['If-Modified-Since'] = back_then
       post :single_post, :project_id => project.id
 
       response.should be_success
       expected = {'en'=>{'this'=>{'is'=>{'a'=>{'test'=>'This is a test.'}}}}}
       response.body.should eq(expected.to_yaml)
+
+      project.clear_cache!
+    end
+  end
+
+  describe 'GET single_get' do
+    it 'should update cache' do
+
+      project = Factory(:project)
+      project.clear_cache!
+
+      locale, token, first_request = nil, nil, nil
+      Timecop.freeze(1.day.ago) do
+        locale = project.locales.create :code => 'en'
+        token = project.find_or_create_tokens('this.is.a.test').last
+        attrs = {"en" => {"content" => "This is a test.", "count" => 1}}
+        token.update_or_create_all_translations(attrs)
+
+        expected = {'en' => {'this' => {'is' => {'a' => {'test' => 'This is a test.'}}}}}
+        first_request = Time.now
+        get :single_get, :project_id => project.id
+        response.should be_success
+        response.body.should eq(expected.to_yaml) 
+      end
+
+      token.translation_for(locale).update_attribute(:content, 'This is an updated test.')
+
+      expected = {'en' => {'this' => {'is' => {'a' => {'test' => 'This is an updated test.'}}}}}
+      request.env['If-Modified-Since'] = first_request
+      get :single_get, :project_id => project.id
+      response.should be_success
+      response.body.should eq(expected.to_yaml) 
+
+      project.clear_cache!
     end
   end
 

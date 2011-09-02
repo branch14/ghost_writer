@@ -65,8 +65,9 @@ describe Token do
 
   context 'given a token with an active translation' do
     let(:token) do
-      Factory(:token).tap do |token|
-        locale = token.project.locales.create :code => 'en'
+      project = Factory(:project)
+      locale = project.locales.create :code => 'en'
+      project.find_or_create_tokens('this.is.a.test').last.tap do |token|
         token.translations.create! :locale_id => locale.id, :content => 'Original content.'
       end
     end
@@ -75,6 +76,36 @@ describe Token do
       translations = token.update_or_create_all_translations(attrs)
       translation_en = translations.select { |t| t.code == 'en' } .first
       translation_en.content.should eq("Original content.")
+    end
+    it 'should provide its translations as a nested hash' do
+      expected = { 'en' => { 'this' => { 'is' => { 'a' => { 'test' => 'Original content.' }}}}}
+      token.translations_as_nested_hash.should eq(expected)
+    end
+  end
+
+  context 'given a couple of tokens with translations' do
+    it 'should find tokens by scope' do
+      project = Factory(:project)
+      token0 = project.find_or_create_tokens('test.token.one').last
+      token1 = project.find_or_create_tokens('test.token.two').last
+      token2 = project.find_or_create_tokens('test.token.three').last
+      locale0 = project.locales.create! :code => 'en'
+      locale1 = project.locales.create! :code => 'de'
+      token0.update_or_create_all_translations
+      token1.update_or_create_all_translations
+      token2.update_or_create_all_translations
+
+      tokens = [ token0, token1, token2 ]
+      Token.changed_after(Time.now).should be_empty
+      Token.changed_after(1.hour.ago).should eq(tokens)
+
+      Timecop.freeze(1.day.ago) do
+        token3 = project.find_or_create_tokens('test.token.four').last
+        token3.update_or_create_all_translations
+      end
+
+      project.tokens.select(&:is_childless?).count.should be(4)
+      Token.changed_after(1.hour.ago).should eq(tokens)
     end
   end
 
