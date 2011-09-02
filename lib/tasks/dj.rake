@@ -10,8 +10,8 @@ namespace :dj do
 
   desc "Start a delayed_job worker."
   task :work => [:environment] do
-    RAILS_DEFAULT_LOGGER.auto_flushing = 1
-    RAILS_DEFAULT_LOGGER.info('activated auto flushing')
+    Rails.logger.auto_flushing = 1
+    Rails.logger.info('activated auto flushing')
     Delayed::Worker.new(:min_priority => ENV['MIN_PRIORITY'], :max_priority => ENV['MAX_PRIORITY']).start
   end
 end
