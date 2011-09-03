@@ -47,6 +47,18 @@ ProjectZero::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
+  # Compress JavaScripts and CSS
+  config.assets.compress = true
+
+  # Don't fallback to assets pipeline if a precompiled asset is missed
+  config.assets.compile = true
+
+  # Generate digests for assets URLs
+  config.assets.digest = true
+
+  # Compress both stylesheets and JavaScripts
+  config.assets.js_compressor  = :uglifier
+
   config.middleware.use ExceptionNotifier,
       :email_prefix => "[GhostWriter] ",
       :sender_address => %{"notifier" <pho@panter.ch>},
