@@ -37,7 +37,8 @@ GEM
       activesupport (= 3.1.0)
     activesupport (3.1.0)
       multi_json (~> 1.0)
-    acts-as-taggable-on (2.0.6)
+    acts-as-taggable-on (2.1.1)
+      rails
     addressable (2.2.6)
     ancestry (1.2.4)
       activerecord (>= 2.2.2)
@@ -52,29 +53,21 @@ GEM
       net-ssh-gateway (>= 1.1.0)
     capistrano-ext (1.2.1)
       capistrano (>= 1.0.0)
-    capybara (1.0.1)
+    capybara (1.1.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
-    childprocess (0.2.1)
+    childprocess (0.2.2)
       ffi (~> 1.0.6)
-    chunky_png (1.2.1)
     cocaine (0.2.0)
-    coffee-rails (3.1.0.rc.6)
-      coffee-script (>= 2.2.0)
-      railties (~> 3.1.0.rc1)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
     coffee-script-source (1.1.2)
     columnize (0.3.4)
-    compass (0.11.5)
-      chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
     daemon_controller (0.2.6)
     daemons (1.1.4)
     delayed_job (2.1.4)
@@ -84,14 +77,14 @@ GEM
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
       warden (~> 1.0.3)
-    diff-lcs (1.1.2)
+    diff-lcs (1.1.3)
     erubis (2.7.0)
     exception_notification_rails3 (1.2.0)
     execjs (1.2.4)
       multi_json (~> 1.0)
-    factory_girl (2.0.4)
-    factory_girl_rails (1.1.0)
-      factory_girl (~> 2.0.0)
+    factory_girl (2.1.0)
+    factory_girl_rails (1.2.0)
+      factory_girl (~> 2.1.0)
       railties (>= 3.0.0)
     fastthread (1.0.7)
     ffi (1.0.9)
@@ -99,28 +92,24 @@ GEM
       actionpack (>= 2.3.7)
       activesupport (>= 2.3.7)
       i18n (~> 0.4)
-    fssm (0.2.7)
     fuubar (0.0.6)
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.8)
       ruby-progressbar (~> 0.0.10)
-    guard (0.6.2)
+    guard (0.6.3)
       thor (~> 0.14.6)
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
       guard (>= 0.2.2)
-    guard-compass (0.0.6)
-      compass (>= 0.10.5)
-      guard (>= 0.2.1)
     guard-mozrepl (0.0.3)
     guard-passenger (0.3.0)
       guard (~> 0.3)
-    guard-rspec (0.4.2)
+    guard-rspec (0.4.3)
       guard (>= 0.4.0)
     guard-spork (0.2.1)
       guard (>= 0.2.2)
       spork (>= 0.8.4)
-    haml (3.1.1)
+    haml (3.1.2)
     has_scope (0.5.1)
     highline (1.6.2)
     hike (1.2.1)
@@ -131,13 +120,13 @@ GEM
     jquery-rails (1.0.13)
       railties (~> 3.0)
       thor (~> 0.14)
-    json (1.5.3)
-    json_pure (1.5.3)
+    json (1.5.4)
+    json_pure (1.5.4)
+      spruz (~> 0.2.8)
     kaminari (0.12.4)
       rails (>= 3.0.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
-    libnotify (0.5.7)
     libv8 (3.3.10.2)
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
@@ -152,12 +141,12 @@ GEM
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
       net-ssh (>= 2.0.9)
-    net-ssh (2.2.0)
+    net-ssh (2.2.1)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     nokogiri (1.5.0)
     orm_adapter (0.0.5)
-    paperclip (2.3.16)
+    paperclip (2.4.0)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
       cocaine (>= 0.0.2)
@@ -219,11 +208,11 @@ GEM
     ruby-progressbar (0.0.10)
     rubyzip (0.9.4)
     sass (3.1.7)
-    sass-rails (3.1.0.rc.6)
-      actionpack (~> 3.1.0.rc6)
-      railties (~> 3.1.0.rc6)
+    sass-rails (3.1.0)
+      actionpack (~> 3.1.0)
+      railties (~> 3.1.0)
       sass (>= 3.1.4)
-    selenium-webdriver (2.4.0)
+    selenium-webdriver (2.5.0)
       childprocess (>= 0.2.1)
       ffi (>= 1.0.7)
       json_pure
@@ -233,6 +222,7 @@ GEM
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    spruz (0.2.13)
     sqlite3 (1.3.4)
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
@@ -248,7 +238,7 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.29)
-    uglifier (1.0.1)
+    uglifier (1.0.2)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
     warden (1.0.5)
@@ -267,8 +257,7 @@ DEPENDENCIES
   capistrano (= 2.8.0)
   capistrano-ext
   capybara
-  coffee-rails
-  compass
+  coffee-script (= 2.2.0)
   delayed_job (= 2.1.4)
   devise
   exception_notification_rails3 (= 1.2.0)
@@ -276,18 +265,16 @@ DEPENDENCIES
   formtastic (= 1.2.3)
   fuubar
   guard-bundler
-  guard-compass
   guard-mozrepl
   guard-passenger
   guard-rspec
   guard-spork
-  haml (= 3.1.1)
+  haml (= 3.1.2)
   inherited_resources (= 1.2.1)
   jquery-rails
-  json
+  json (= 1.5.4)
   kaminari
   launchy
-  libnotify
   mysql
   paperclip (~> 2.3)
   passenger
@@ -295,11 +282,11 @@ DEPENDENCIES
   rails (= 3.1.0)
   rspec-rails (= 2.6.1.beta1)
   ruby-debug
-  sass-rails
+  sass-rails (= 3.1.0)
   spork (= 0.9.0.rc3)
   sqlite3-ruby
   steak
-  therubyracer
+  therubyracer (= 0.9.4)
   timecop
-  uglifier
+  uglifier (= 1.0.2)
   yard

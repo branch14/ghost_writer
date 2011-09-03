@@ -2,11 +2,13 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.0'
 
-group :assets do
-  gem 'sass-rails'
-  gem 'coffee-rails'
-  gem 'uglifier'
-end
+# Rails 3.1 - Asset Pipeline
+gem 'json', '1.5.4'
+gem 'haml', '3.1.2'
+gem 'sass-rails', '3.1.0'
+gem 'coffee-script', '2.2.0'
+gem 'uglifier', '1.0.2'
+gem 'therubyracer', '0.9.4'
 
 # gems in chronological order
 gem 'acts-as-taggable-on'
@@ -14,9 +16,7 @@ gem 'best_in_place', :git => 'git://github.com/branch14/best_in_place.git'
 gem 'delayed_job', '2.1.4'
 gem 'exception_notification_rails3', '1.2.0', :require => 'exception_notifier'
 gem 'formtastic', '1.2.3'
-gem 'haml', '3.1.1'
 gem 'inherited_resources', '1.2.1'
-gem 'json'
 gem 'kaminari'
 gem 'mysql'
 gem 'devise'
@@ -25,9 +25,6 @@ gem 'pg'
 # gem 'yaml_db'
 gem 'ancestry'
 gem 'jquery-rails'
-
-# i guess the asset pipeline makes use of this
-gem 'therubyracer'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
@@ -43,12 +40,10 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-spork'
   gem 'guard-bundler'
-  gem 'guard-compass'
   gem 'guard-passenger'
   gem 'guard-mozrepl'
   gem 'passenger'
   gem 'factory_girl_rails'
-  gem 'compass'
 
   gem 'capistrano', '2.8.0'
   gem 'capistrano-ext'
@@ -63,8 +58,10 @@ group :development, :test do
 #  if RUBY_PLATFORM =~ /-*darwin.*/
 #    gem 'growl'
 #  end
-  if RUBY_PLATFORM =~ /-*linux.*/
-    gem 'libnotify'
-  end
+
+# FIXME seb: this breaks deploy from mac
+#  if RUBY_PLATFORM =~ /-*linux.*/
+#    gem 'libnotify'
+#  end
 
 end
