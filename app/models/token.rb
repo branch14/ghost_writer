@@ -4,6 +4,8 @@ require 'digest'
 class Token < ActiveRecord::Base
 
   def self.changed_after(time)
+    time = DateTime.parse(time) if time.is_a?(String)
+    time = time.to_formatted_s(:db)
     self.includes(:translations).where(['translations.updated_at > ?', time])
   end
 

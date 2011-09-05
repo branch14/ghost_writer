@@ -84,8 +84,8 @@ describe Token do
   end
 
   context 'given a couple of tokens with translations' do
-    it 'should find tokens by scope' do
-      project = Factory(:project)
+    it 'should find tokens by named scope changed_after' do
+        project = Factory(:project)
       token0 = project.find_or_create_tokens('test.token.one').last
       token1 = project.find_or_create_tokens('test.token.two').last
       token2 = project.find_or_create_tokens('test.token.three').last
@@ -94,18 +94,29 @@ describe Token do
       token0.update_or_create_all_translations
       token1.update_or_create_all_translations
       token2.update_or_create_all_translations
-
       tokens = [ token0, token1, token2 ]
-      Token.changed_after(Time.now).should be_empty
-      Token.changed_after(1.hour.ago).should eq(tokens)
+  
+      now = I18n.l(Time.now, :format => :http)
+      an_hour_ago = I18n.l(1.hour.ago, :format => :http)
 
+      Token.changed_after(now).should be_empty
+      Token.changed_after(an_hour_ago).should eq(tokens)
+  
       Timecop.freeze(1.day.ago) do
         token3 = project.find_or_create_tokens('test.token.four').last
         token3.update_or_create_all_translations
       end
-
+  
       project.tokens.select(&:is_childless?).count.should be(4)
-      Token.changed_after(1.hour.ago).should eq(tokens)
+      Token.changed_after(an_hour_ago).should eq(tokens)
+    end
+  end
+
+  context 'named scope changed_after' do
+    it 'should accept date_times and strings as well' do
+      sql0 = Token.changed_after(Time.now).to_sql
+      sql1 = Token.changed_after(I18n.l(Time.now, :format => :http)).to_sql 
+      sql0.should eq(sql1)
     end
   end
 
