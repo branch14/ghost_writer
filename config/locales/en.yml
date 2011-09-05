@@ -33,6 +33,7 @@ en:
   time:
     formats:
       filename: %Y-%m-%d-%H-%M
+      http: %a, %d %b %Y %H:%M:%S %Z
 
   reset_counters_warning: All 'hits' and 'missed' counters will be set to zero.
   reset_translations_warning: Locales and snapshots will be kept everthing else will vanish.

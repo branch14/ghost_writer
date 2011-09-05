@@ -32,8 +32,9 @@ class ApiController < ApplicationController
   end
 
   def set_project!
-    @project = Project.where(:id => params[:project_id]).
-      includes(:locales, :tokens => :translations).first
+    # @project = Project.where(:id => params[:project_id]).
+    #   includes(:locales, :tokens => :translations).first
+    @project = Project.find(params[:project_id])
   end
 
   def send_yaml
@@ -51,11 +52,11 @@ class ApiController < ApplicationController
     # write cache
     Rails.cache.write(@project.permalink, data)
     # set last-modified header
-    response.headers['Last-Modified'] = Time.now
-    # just in case
-    raise 'no data' if data.blank?
+    # see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29
+    # resp. http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3
+    response.headers['Last-Modified'] = l(Time.now, :format => :http)
     # send data
-    send_data data.to_yaml, :type => 'application/x-yaml', :filename => 'translations.yml'
+    send_data(data.to_yaml, :type => 'application/x-yaml', :filename => 'translations.yml')
   end
 
 end
