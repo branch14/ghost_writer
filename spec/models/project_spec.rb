@@ -63,8 +63,7 @@ describe Project do
     it 'should suppress inactive translations' do
       tokens = project.find_or_create_tokens('this.is.a.test')
       tokens.last.update_or_create_all_translations
-      # FIXME should be empty
-      expected = {'en' => {'this' => {'is' => {'a' => {}}}}}
+      expected = {'en' => {}}
       project.aggregated_translations.should eq(expected)
     end
 
@@ -110,6 +109,10 @@ this.is.another.test,"This is a mean test, it contains a \"\".","Dies ist ein an
       project.to_csv.should eq(expected)
     end
 
+    it 'should nicely strip down hashes of tokens' do
+      project.tokens.last.translations.first.update_attribute(:content, nil)
+      expected = {"de"=>{"this"=>{"is"=>{"a"=>{"test"=>"Dies ist ein Test."}, "another"=>{"test"=>"Dies ist ein anderer Test, mit Komma."}}}}, "en"=>{"this"=>{"is"=>{"a"=>{"test"=>"This is a test."}}}}}
+      project.aggregated_translations.should eq(expected)
+    end
   end
-
 end

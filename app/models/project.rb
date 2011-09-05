@@ -111,7 +111,6 @@ class Project < ActiveRecord::Base
 
   private
 
-  # FIXME remove empty branches
   def strip_down(tree, locale)
     Hash.new.tap do |result|
       tree.each do |token, value|
@@ -122,7 +121,8 @@ class Project < ActiveRecord::Base
             result[token.key] = translation.content
           end
         else
-          result[token.key] = strip_down(value, locale)
+          subtree = strip_down(value, locale)
+          result[token.key] = subtree unless subtree.empty?
         end
       end
     end
