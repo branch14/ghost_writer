@@ -88,6 +88,7 @@ class Project < ActiveRecord::Base
       token = find_or_create_tokens(key).last
       token.update_or_create_all_translations(normalize_attributes(val))
     end
+    File.delete(options[:filename]) if options.has_key?(:filename)
   end
 
   # TODO adjust this method to incoming data
