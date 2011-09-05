@@ -1,3 +1,4 @@
+%h1=t('.background_jobs')
 %table
   %tr
     %th id
@@ -19,7 +20,7 @@
       %td
         %pre=job.handler
       %td
-        %pre=job.last_error.gsub('\n', "\n") if job.last_error
+        %pre=truncate(job.last_error.gsub('\n', "\n")) if job.last_error
       %td=job.run_at
       -# %td=job.locked_at
       -# %td=job.failed_at

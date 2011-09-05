@@ -29,6 +29,7 @@ Delete some failed jobs
 -----------------------
 
 delete from delayed_jobs where last_error LIKE '{no data supplied%';
+delete from delayed_jobs where last_error LIKE '{No such file or directory%';
 
 
 Interfacing with translation suppliers

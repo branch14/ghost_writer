@@ -1,0 +1,31 @@
+cache: [GET /api/6] miss
+[Mon Sep 05 14:08:17 2011] [error] [client 62.2.200.206] Premature end of script headers: api
+[ pid=23652 thr=1141041488 file=ext/apache2/Hooks.cpp:820 time=2011-09-05 14:08:17.558 ]: The backend application (process 3165) did not send a valid HTTP response; instead, it sent nothing at all. It is possible that it has crashed; please check whether there are crashing bugs in this application.
+[ pid=3165 thr=70187862809020 file=utils.rb:176 time=2011-09-05 14:08:17.558 ]: *** Exception NoMethodError in application (undefined method `each' for Mon Sep 05 14:08:17 +0200 2011:Time) (process 3165, thread #<Thread:0x7fabc542b378>):
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/request_handler.rb:110:in `process_request'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/request_handler.rb:106:in `each'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/request_handler.rb:106:in `process_request'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_request_handler.rb:513:in `accept_and_process_next_request'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_request_handler.rb:274:in `main_loop'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/application_spawner.rb:205:in `start_request_handler'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/application_spawner.rb:170:in `send'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/application_spawner.rb:170:in `handle_spawn_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/utils.rb:479:in `safe_fork'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/application_spawner.rb:165:in `handle_spawn_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:357:in `__send__'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:357:in `server_main_loop'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:206:in `start_synchronously'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:180:in `start'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/rack/application_spawner.rb:128:in `start'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/spawn_manager.rb:253:in `spawn_rack_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server_collection.rb:132:in `lookup_or_add'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/spawn_manager.rb:246:in `spawn_rack_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server_collection.rb:82:in `synchronize'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server_collection.rb:79:in `synchronize'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/spawn_manager.rb:244:in `spawn_rack_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/spawn_manager.rb:137:in `spawn_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/spawn_manager.rb:275:in `handle_spawn_application'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:357:in `__send__'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:357:in `server_main_loop'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/lib/phusion_passenger/abstract_server.rb:206:in `start_synchronously'
+  from /usr/lib/ruby/gems/1.8/gems/passenger-3.0.2/helper-scripts/passenger-spawn-server:99

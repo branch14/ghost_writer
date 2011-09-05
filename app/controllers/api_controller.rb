@@ -52,6 +52,8 @@ class ApiController < ApplicationController
     Rails.cache.write(@project.permalink, data)
     # set last-modified header
     response.headers['Last-Modified'] = Time.now
+    # just in case
+    raise 'no data' if data.blank?
     # send data
     send_data data.to_yaml, :type => 'application/x-yaml', :filename => 'translations.yml'
   end
