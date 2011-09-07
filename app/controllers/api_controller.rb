@@ -7,7 +7,7 @@ class ApiController < ApplicationController
   end
 
   def single_post
-    if params[:miss].size > 2 # empty is {}
+    if params[:miss] and params[:miss].size > 2 # empty is {}
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:miss] }
       @project.delay.handle_missed!(:filename => filename)

@@ -114,5 +114,11 @@ this.is.another.test,"This is a mean test, it contains a \"\".","Dies ist ein an
       expected = {"de"=>{"this"=>{"is"=>{"a"=>{"test"=>"Dies ist ein Test."}, "another"=>{"test"=>"Dies ist ein anderer Test, mit Komma."}}}}, "en"=>{"this"=>{"is"=>{"a"=>{"test"=>"This is a test."}}}}}
       project.aggregated_translations.should eq(expected)
     end
+
+    it 'should nicly reset counters to zero' do
+      project.locales.first.translations.first.update_attribute(:miss_counter, 42)
+      expect { project.send(:perform_reset_counters!) }.should_not raise_error
+      project.translations.map(&:miss_counter).uniq.should eq([0])
+    end
   end
 end

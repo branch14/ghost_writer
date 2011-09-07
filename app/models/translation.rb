@@ -33,11 +33,11 @@ class Translation < ActiveRecord::Base
 
   def reset_counters!
     zero_counters!
-    save
+    save!
   end
 
   def zero_counters!
-    attributes.merge! :miss_counter => 0, :hits_counter => 0
+    self.attributes = attributes.merge :miss_counter => 0, :hits_counter => 0
   end
 
 end

@@ -26,7 +26,9 @@ class Project < ActiveRecord::Base
     :length => { :minimum => 4 }
 
   after_update :perform_reset_translations!, :if => :reset_translations
-  # after_update :perform_reset_counters!, :if => :reset_counters
+  after_update :perform_reset_counters!, :if => :reset_counters
+
+  before_save :set_api_key, :unless => :api_key?
 
   def remaining_locales
     codes = locales.map &:code
@@ -139,7 +141,8 @@ class Project < ActiveRecord::Base
   end
 
   def set_api_key
-    self.api_key = Digest::MD5.hexdigest(created_at.to_s + permalink)
+    iso = (created_at || Time.now).strftime('%Y-%m-%d_%H:%M:%S')
+    self.api_key = Digest::MD5.hexdigest([iso, permalink] * '_')
   end
 
 end
