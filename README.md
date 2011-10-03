@@ -1,3 +1,7 @@
+GhostWriter needs a README
+
+This is the README from ProjectZero
+
 ## Rails project to kickstart development
 
 Comes with:
