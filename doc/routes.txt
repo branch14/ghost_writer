@@ -1,3 +1,18 @@
+        api_translations GET    /api/:apikey/translations(.:format)              {:action=>"index", :apikey=>/[a-fA-F\d]{32}/, :controller=>"api/translations"}
+                         POST   /api/:apikey/translations(.:format)              {:action=>"create", :apikey=>/[a-fA-F\d]{32}/, :controller=>"api/translations"}
+        new_user_session GET    /users/sign_in(.:format)                         {:action=>"new", :controller=>"devise/sessions"}
+            user_session POST   /users/sign_in(.:format)                         {:action=>"create", :controller=>"devise/sessions"}
+    destroy_user_session GET    /users/sign_out(.:format)                        {:action=>"destroy", :controller=>"devise/sessions"}
+           user_password POST   /users/password(.:format)                        {:action=>"create", :controller=>"devise/passwords"}
+       new_user_password GET    /users/password/new(.:format)                    {:action=>"new", :controller=>"devise/passwords"}
+      edit_user_password GET    /users/password/edit(.:format)                   {:action=>"edit", :controller=>"devise/passwords"}
+                         PUT    /users/password(.:format)                        {:action=>"update", :controller=>"devise/passwords"}
+cancel_user_registration GET    /users/cancel(.:format)                          {:action=>"cancel", :controller=>"devise/registrations"}
+       user_registration POST   /users(.:format)                                 {:action=>"create", :controller=>"devise/registrations"}
+   new_user_registration GET    /users/sign_up(.:format)                         {:action=>"new", :controller=>"devise/registrations"}
+  edit_user_registration GET    /users/edit(.:format)                            {:action=>"edit", :controller=>"devise/registrations"}
+                         PUT    /users(.:format)                                 {:action=>"update", :controller=>"devise/registrations"}
+                         DELETE /users(.:format)                                 {:action=>"destroy", :controller=>"devise/registrations"}
                documents GET    /documents(.:format)                             {:action=>"index", :controller=>"documents"}
                          POST   /documents(.:format)                             {:action=>"create", :controller=>"documents"}
             new_document GET    /documents/new(.:format)                         {:action=>"new", :controller=>"documents"}
@@ -12,19 +27,6 @@
                 snapshot GET    /snapshots/:id(.:format)                         {:action=>"show", :controller=>"snapshots"}
                          PUT    /snapshots/:id(.:format)                         {:action=>"update", :controller=>"snapshots"}
                          DELETE /snapshots/:id(.:format)                         {:action=>"destroy", :controller=>"snapshots"}
-        new_user_session GET    /users/sign_in(.:format)                         {:action=>"new", :controller=>"devise/sessions"}
-            user_session POST   /users/sign_in(.:format)                         {:action=>"create", :controller=>"devise/sessions"}
-    destroy_user_session GET    /users/sign_out(.:format)                        {:action=>"destroy", :controller=>"devise/sessions"}
-           user_password POST   /users/password(.:format)                        {:action=>"create", :controller=>"devise/passwords"}
-       new_user_password GET    /users/password/new(.:format)                    {:action=>"new", :controller=>"devise/passwords"}
-      edit_user_password GET    /users/password/edit(.:format)                   {:action=>"edit", :controller=>"devise/passwords"}
-                         PUT    /users/password(.:format)                        {:action=>"update", :controller=>"devise/passwords"}
-cancel_user_registration GET    /users/cancel(.:format)                          {:action=>"cancel", :controller=>"devise/registrations"}
-       user_registration POST   /users(.:format)                                 {:action=>"create", :controller=>"devise/registrations"}
-   new_user_registration GET    /users/sign_up(.:format)                         {:action=>"new", :controller=>"devise/registrations"}
-  edit_user_registration GET    /users/edit(.:format)                            {:action=>"edit", :controller=>"devise/registrations"}
-                         PUT    /users(.:format)                                 {:action=>"update", :controller=>"devise/registrations"}
-                         DELETE /users(.:format)                                 {:action=>"destroy", :controller=>"devise/registrations"}
          project_locales GET    /projects/:project_id/locales(.:format)          {:action=>"index", :controller=>"locales"}
                          POST   /projects/:project_id/locales(.:format)          {:action=>"create", :controller=>"locales"}
       new_project_locale GET    /projects/:project_id/locales/new(.:format)      {:action=>"new", :controller=>"locales"}
@@ -60,7 +62,5 @@ cancel_user_registration GET    /users/cancel(.:format)                         
                      job GET    /jobs/:id(.:format)                              {:action=>"show", :controller=>"jobs"}
                          PUT    /jobs/:id(.:format)                              {:action=>"update", :controller=>"jobs"}
                          DELETE /jobs/:id(.:format)                              {:action=>"destroy", :controller=>"jobs"}
-                         POST   /api/:project_id(.:format)                       {:action=>"single_post", :controller=>"api"}
-                         GET    /api/:project_id(.:format)                       {:action=>"single_get", :controller=>"api"}
                     root        /                                                {:action=>"index", :controller=>"projects"}
           exception_test        /exception_test(.:format)                        {:action=>"error", :controller=>"exception_test"}

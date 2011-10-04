@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
     :count => :miss_counter
   }
 
-  attr_accessor :reset_translations, :reset_counters
+  attr_accessor :reset_translations, :reset_counters, :missings_in_json
   attr_accessible :title, :permalink, :locales_attributes,
                   :reset_translations, :reset_counters
 
@@ -79,11 +79,17 @@ class Project < ActiveRecord::Base
   end
 
   # options should have exactly one of...
-  #  * :filename 
+  #  * :filename (a path to a file containing JSON) 
   #  * :json (a JSON String)
   #  * :data (a Hash)
-  def handle_missed!(options)
+  #
+  # Alternatively a JSON string may be stored in attr_accessor
+  # 'missings_in_json' to have it available when the call is
+  # dispatched via delayed_job. In that case :filename and :json
+  # will be ignored.
+  def handle_missed!(options = {})
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
+    options[:json] = missings_in_json unless missings_in_json.nil?
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
     raise "no data supplied" if options[:data].blank?
     options[:data].each do |key, val|
@@ -93,7 +99,6 @@ class Project < ActiveRecord::Base
     File.delete(options[:filename]) if options.has_key?(:filename)
   end
 
-  # TODO adjust this method to incoming data
   def normalize_attributes(attrs)
     locales.map(&:code).inject({}) do |result, code|
       result.tap do |provis|

@@ -1,6 +1,7 @@
 class ApiController < ApplicationController
 
   before_filter :set_project!
+  skip_before_filter :authenticate_user!
 
   def single_get
     send_yaml
