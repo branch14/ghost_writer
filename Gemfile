@@ -52,6 +52,8 @@ group :development, :test do
   gem 'launchy'
   gem 'timecop'
 
+  gem 'itslog'
+
   # gem 'rails-footnotes', '>= 3.7'
 
 #  Below an ideaf how to enable operating system dependant gems.

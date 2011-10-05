@@ -6,10 +6,4 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate_user!
 
-  private
-
-  def http_time(time=Time.now)
-    time.strftime('%a, %d %b %Y %H:%M:%S %Z')
-  end
-  
 end
