@@ -36,6 +36,7 @@ ProjectZero::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.default_url_options = { :host => 'ghost.panter.ch' }
 
   # Enable threaded mode
   # config.threadsafe!
@@ -63,4 +64,5 @@ ProjectZero::Application.configure do
       :email_prefix => "[GhostWriter] ",
       :sender_address => %{"notifier" <pho@panter.ch>},
       :exception_recipients => %w(pho@panter.ch)
+
 end
