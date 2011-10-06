@@ -20,6 +20,7 @@ en:
       reset: Reset
       locales: Locales
       lastlog: Last %{count} Changes
+      add_user: Add user
     index:
       title: Title
 

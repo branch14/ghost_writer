@@ -7,9 +7,10 @@ class Project < ActiveRecord::Base
     :count => :miss_counter
   }
 
-  attr_accessor :reset_translations, :reset_counters, :missings_in_json
+  attr_accessor :reset_translations, :reset_counters, :missings_in_json,
+                :new_user_email
   attr_accessible :title, :permalink, :locales_attributes,
-                  :reset_translations, :reset_counters
+                  :reset_translations, :reset_counters, :new_user_email
 
   has_many :tokens
   has_many :locales
@@ -29,6 +30,7 @@ class Project < ActiveRecord::Base
   after_update :perform_reset_counters!, :if => :reset_counters
 
   before_save :set_api_key, :unless => :api_key?
+  before_save :add_user, :if => :new_user_email
 
   def remaining_locales
     codes = locales.map &:code
@@ -148,6 +150,11 @@ class Project < ActiveRecord::Base
   def set_api_key
     iso = (created_at || Time.now).strftime('%Y-%m-%d_%H:%M:%S')
     self.api_key = Digest::MD5.hexdigest([iso, permalink] * '_')
+  end
+
+  def add_user
+    user = User.find_by_email(new_user_email)
+    users << user unless user.nil?
   end
 
 end

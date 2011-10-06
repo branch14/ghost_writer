@@ -70,5 +70,12 @@
             ==#{translation.code}:
             %b== "#{translation.content}"
 
-
+%h2=t('.users')
+%ul
+  -@project.users.each do |user|
+    %li=user.email
+  %li
+    =form_for @project do |pf|
+      =pf.text_field :new_user_email
+      =pf.submit t('.add_user')
 
