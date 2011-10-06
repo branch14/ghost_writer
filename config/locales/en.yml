@@ -21,6 +21,7 @@ en:
       locales: Locales
       lastlog: Last %{count} Changes
       add_user: Add user
+      api_key: Api key
     index:
       title: Title
 
