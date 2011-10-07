@@ -12,7 +12,7 @@ class Api::TranslationsController < ApplicationController
     data, last_modified = nil, nil
 
     if timestamp.blank? # sent all translations (Initial request)
-      if cache = Rails.cache.read(permalink)
+      if cache = false && Rails.cache.read(permalink) # temporarily deactivated
         data = cache[:data]
         last_modified = cache[:timestamp]
       else
