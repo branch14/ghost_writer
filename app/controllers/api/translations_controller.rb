@@ -6,6 +6,15 @@ class Api::TranslationsController < ApplicationController
 
   # Inital & Incremental requests
   # e.g. GET http://0.0.0.0:3000/api/91885ca9ec4feb9b2ed2423cdbdeda32/translations.json
+  #
+  # Example for Incremental request
+  #
+  # GET /api/e0e948efc3606e00c4b981bb2d3f7463/translations.json HTTP/1.1
+  # Content-Length: 0
+  # If-Modified-Since: Tue, 11 Oct 2011 07:51:14 GMT
+  # Host: ghost.panter.ch:80
+  #
+  #
   def index
     permalink = @project.permalink
     timestamp = request.if_modified_since

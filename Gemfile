@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0'
+gem 'rails', '3.1.1'
 
 # Rails 3.1 - Asset Pipeline
 gem 'json', '1.5.4'
@@ -15,7 +15,7 @@ gem 'acts-as-taggable-on'
 gem 'best_in_place', :git => 'git://github.com/branch14/best_in_place.git'
 gem 'delayed_job', '2.1.4'
 gem 'exception_notification_rails3', '1.2.0', :require => 'exception_notifier'
-gem 'formtastic', '1.2.3'
+# gem 'formtastic', '1.2.3'
 gem 'inherited_resources', '1.2.1'
 gem 'kaminari'
 gem 'mysql'
@@ -26,6 +26,9 @@ gem 'pg'
 gem 'ancestry'
 gem 'jquery-rails'
 gem 'cancan'
+
+# see https://github.com/rails/rails/issues/3053
+gem 'rack-cache', '>= 1.1'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
