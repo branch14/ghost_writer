@@ -1,6 +1,6 @@
 class ProjectsController < InheritedResources::Base
 
-  respond_to :html, :csv
+  respond_to :html, :csv, :yaml
 
   before_filter :redirect_if_only_one_project, :only => :index
 
@@ -8,12 +8,12 @@ class ProjectsController < InheritedResources::Base
     show! do |format|
       format.html
       format.csv { send_csv }
+      format.yaml { send_yaml }
     end
   end
 
   def create
     @project = Project.new(params[:project])
-    # @project.assignments.build :user_id => current_user.id, :role => 'owner'
     create!
     current_user.assignments.create! :project => @project, :role => 'owner'
   end
@@ -44,7 +44,12 @@ class ProjectsController < InheritedResources::Base
     send_data @project.to_csv,
       :type => 'text/csv',
       :filename => "#{@project.permalink}.csv"
-      #:disposition => 'attachment'
+  end
+
+  def send_yaml
+    send_data @project.to_yaml,
+      :type => 'application/x-yaml',
+      :filename => "#{@project.permalink}.yml"
   end
 
 end

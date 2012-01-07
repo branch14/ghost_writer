@@ -26,6 +26,7 @@
 %h2=t('.export')
 %ul
   %li=link_to t('.export_csv'), project_path(@project, :format => 'csv')
+  %li=link_to t('.export_yaml'), project_path(@project, :format => 'yaml')
 
 %h2=t('.snapshots')
 %table

@@ -58,6 +58,10 @@ class Project < ActiveRecord::Base
     end * "\n" + "\n"
   end
 
+  def to_yaml
+    aggregated_translations.to_yaml
+  end
+
   def new_snapshot_name
     time = I18n.l Time.now, :format => :filename
     name = "translations_%s_%s.yml" % [ permalink, time ]
