@@ -4,7 +4,7 @@ class Api::TranslationsController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :set_project!
 
-  # Inital & Incremental requests
+  # Initial & Incremental requests
   # e.g. GET http://0.0.0.0:3000/api/91885ca9ec4feb9b2ed2423cdbdeda32/translations.json
   #
   # Example for Incremental request
@@ -13,7 +13,6 @@ class Api::TranslationsController < ApplicationController
   # Content-Length: 0
   # If-Modified-Since: Tue, 11 Oct 2011 07:51:14 GMT
   # Host: ghost.panter.ch:80
-  #
   #
   def index
     permalink = @project.permalink
@@ -55,10 +54,12 @@ class Api::TranslationsController < ApplicationController
   # Reporting request
   # e.g. POST http://0.0.0.0:3000/api/91885ca9ec4feb9b2ed2423cdbdeda32/translations.json
   def create
+    project_proxy = @project.delay
+    project_proxy = @project if Rails.env.development? and !dj_running?
     if params[:data] and params[:data].size > 2 # empty is '{}'
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:data] }
-      @project.delay.handle_missed!(:filename => filename)
+      project_proxy.handle_missed!(:filename => filename)
     end
     redirect_to api_translations_url(:api_key => @project.api_key)
   end

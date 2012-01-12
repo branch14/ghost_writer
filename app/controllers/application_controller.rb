@@ -6,4 +6,8 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate_user!
 
+  def dj_running?
+    !!%x[ps x].match(/rake dj:work/)
+  end
+
 end
