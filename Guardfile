@@ -43,9 +43,9 @@ end
 # guard 'mozrepl', :host => 'localhost', :port => 4242, :verbose => true do
 #   ...
 
-guard 'passenger' do
-  watch('Gemfile')
-  watch(/^lib\/.*\.rb$/)
-  watch(/^config\/.*\.rb$/)
-end
+#guard 'passenger' do
+#  watch('Gemfile')
+#  watch(/^lib\/.*\.rb$/)
+#  watch(/^config\/.*\.rb$/)
+#end
 
