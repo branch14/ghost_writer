@@ -47,7 +47,7 @@ class ProjectsController < InheritedResources::Base
   end
 
   def send_yaml
-    send_data @project.to_yaml,
+    send_data @project.to_yaml_for_export,
       :type => 'application/x-yaml',
       :filename => "#{@project.permalink}.yml"
   end

@@ -58,7 +58,7 @@ class Project < ActiveRecord::Base
     end * "\n" + "\n"
   end
 
-  def to_yaml
+  def to_yaml_for_export
     aggregated_translations.to_yaml
   end
 
@@ -94,6 +94,7 @@ class Project < ActiveRecord::Base
   # dispatched via delayed_job. In that case :filename and :json
   # will be ignored.
   def handle_missed!(options = {})
+    logger.debug "Handling missed with options: #{options.inspect}"
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
     options[:json] = missings_in_json unless missings_in_json.nil?
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  

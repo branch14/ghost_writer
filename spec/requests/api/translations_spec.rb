@@ -21,9 +21,28 @@ describe "Translations" do
   end
 
   describe "POST /api/<api_key>/translations" do
+    let(:project) { Factory(:project) }
+
     it "should respond with redirect" do
-      project = Factory(:project)
       post api_translations_path(:api_key => project.api_key)
+      response.status.should be(302) # redirect
+    end
+
+    it "should simply work" do
+      data = {'simple' => 'nothing special here'}
+      post api_translations_path(:api_key => project.api_key, :data => data.to_json)
+      response.status.should be(302) # redirect
+    end
+
+    it "should simply work 2" do
+      data = {'with.weird_characters' => 'copy & paste'}
+      post api_translations_path(:api_key => project.api_key, :data => data.to_json)
+      response.status.should be(302) # redirect
+    end
+
+    it "should simply work 3" do
+      data = {'with.interpolation' => '%{interpol}'}
+      post api_translations_path(:api_key => project.api_key, :data => data.to_json)
       response.status.should be(302) # redirect
     end
   end

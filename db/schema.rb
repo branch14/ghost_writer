@@ -102,18 +102,16 @@ ActiveRecord::Schema.define(:version => 20120112140330) do
   add_index "tokens", ["ancestry"], :name => "index_tokens_on_ancestry"
   add_index "tokens", ["ancestry_depth"], :name => "index_tokens_on_depth"
   add_index "tokens", ["full_key"], :name => "index_tokens_on_full_key"
-  add_index "tokens", ["project_id"], :name => "index_tokens_on_hashed_and_project_id"
-  add_index "tokens", ["project_id"], :name => "index_tokens_on_raw_and_project_id"
 
   create_table "translations", :force => true do |t|
-    t.text     "content",      :limit => 255
-    t.integer  "hits_counter",                :default => 0
+    t.text     "content"
+    t.integer  "hits_counter", :default => 0
     t.integer  "token_id"
     t.integer  "locale_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                      :default => false
-    t.integer  "miss_counter",                :default => 0
+    t.boolean  "active",       :default => false
+    t.integer  "miss_counter", :default => 0
   end
 
   add_index "translations", ["content", "locale_id"], :name => "index_translations_on_content_and_locale_id"
