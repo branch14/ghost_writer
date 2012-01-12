@@ -60,9 +60,16 @@ class Api::TranslationsController < ApplicationController
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:data] }
       project_proxy.handle_missed!(:filename => filename)
+      # Delayed::Job.enqueue HandleMissedJob.new(@project, filename)
     end
     redirect_to api_translations_url(:api_key => @project.api_key)
   end
+
+  # class HandleMissedJob < Struct.new(:project, :filename)
+  #   def perform
+  #     project.handle_missed!(:filename => filename)
+  #   end
+  # end
 
   private
 
