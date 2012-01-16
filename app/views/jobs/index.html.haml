@@ -4,7 +4,8 @@
     %th id
     %th priority 
     %th attempts
-    %th handler
+    %th project
+    %th filename
     %th last_error
     %th run_at
     -# %th locked_at
@@ -17,10 +18,10 @@
       %td=job.id
       %td=job.priority
       %td=job.attempts
-      %td
-        %pre=job.handler
-      %td
-        %pre=truncate(job.last_error.gsub('\n', "\n")) if job.last_error
+      %td=job.handler.payload_object.object.title
+      -file = File.basename(job.handler.payload_object.args.first[:filename])
+      %td=link_to file, "/#{file}"
+      %td=job.last_error.split('\n').first if job.last_error
       %td=job.run_at
       -# %td=job.locked_at
       -# %td=job.failed_at
