@@ -77,7 +77,8 @@ class Api::TranslationsController < ApplicationController
     filename, counter = nil, 0
     while filename.nil? or File.exist?(filename)
       counter += 1
-      filename = File.join(Rails.root, 'public', "#{@project.permalink}_%06d.json" % counter)
+      filename = File.join(Rails.root, %(public system reports),
+                           "#{@project.permalink}_%06d.json" % counter)
     end
     filename
   end
