@@ -94,16 +94,20 @@ class Project < ActiveRecord::Base
   # dispatched via delayed_job. In that case :filename and :json
   # will be ignored.
   def handle_missed!(options = {})
-    logger.debug "Handling missed with options: #{options.inspect}"
+    logger.info "Handling missed with options: #{options.inspect}"
     options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
     options[:json] = missings_in_json unless missings_in_json.nil?
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
     raise "no data supplied" if options[:data].blank?
     options[:data].each do |key, val|
+      logger.info "Data: #{key} => #{val.inspect}"
       token = find_or_create_tokens(key).last
       token.update_or_create_all_translations(normalize_attributes(val))
     end
-    File.delete(options[:filename]) if options.has_key?(:filename)
+    if options.has_key?(:filename)
+      logger.info "Removing file #{options[:filename]}"
+      File.delete(options[:filename]) 
+    end
   end
 
   def normalize_attributes(attrs)
