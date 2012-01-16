@@ -13,6 +13,7 @@
     -# %th locked_by
     %th created_at
     -# %th updated_at
+    %th actions
   -@jobs.each do |job|
     %tr
       %td=job.id
@@ -28,3 +29,4 @@
       -# %td=job.locked_by
       %td=job.created_at
       -# %td=job.updated_at
+      %td=link_to 'delete', resource_path(job), :method => 'delete', :confirm => 'Sure?'

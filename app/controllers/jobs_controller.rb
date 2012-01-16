@@ -1,6 +1,6 @@
 class JobsController < InheritedResources::Base
 
-  actions :index
+  actions :index, :destroy
 
   defaults :resource_class => Delayed::Job
 
