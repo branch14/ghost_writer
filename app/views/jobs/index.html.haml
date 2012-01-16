@@ -18,8 +18,8 @@
       %td=job.id
       %td=job.priority
       %td=job.attempts
-      %td=job.handler.payload_object.object.title
-      -file = File.basename(job.handler.payload_object.args.first[:filename])
+      %td=job.payload_object.object.title
+      -file = File.basename(job.payload_object.args.first[:filename])
       %td=link_to file, "/#{file}"
       %td=job.last_error.split('\n').first if job.last_error
       %td=job.run_at
