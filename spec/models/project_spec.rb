@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
 require File.expand_path('../../spec_helper', __FILE__)
+
+# GhostReader posts this as data
+# {\"activerecord.attributes.chamber.key\":{\"de\":{\"default\":\"Kammer Schl\\u00fcssel\"}}}
+# GhostWriter works on this
+# 12:45:03 Data: activerecord.attributes.chamber.key => {"de"=>{"default"=>"Kammer Schlüssel"}}
 
 describe Project do
 
@@ -21,7 +27,7 @@ describe Project do
     end
 
     it 'should normalize attributes' do
-      input = {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}                                
+      input = {"en"=>{"default"=>"This is a test.", "count"=>1}}                                
       expected = {"en" => {"content" => "This is a test.", "miss_counter" => 1}}
       normalized = project.normalize_attributes(input)
       normalized.should eq(expected)
@@ -33,13 +39,13 @@ describe Project do
     end
 
     it 'should properly build aggregated translations' do
-      data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
+      data = {"this.is.a.test" => {"en"=>{"default"=>"This is a test.", "count"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test."}}}}}
       project.handle_missed!(:data => data)
       project.find_or_create_tokens('this.is.a.test').last.translations.first.should be_active
       project.aggregated_translations.should eq(expected)
 
-      data = {"this.is.a.2nd_test" => {"default"=>{"en"=>"Hello world."}, "count"=>{"en"=>1}}}
+      data = {"this.is.a.2nd_test" => {"en"=>{"default"=>"Hello world.", "count"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test.",
                                                        "2nd_test" => "Hello world."}}}}}
       project.handle_missed!(:data => data)
@@ -47,7 +53,7 @@ describe Project do
     end
 
     it 'should handle missed from json file' do
-      data = {"this.is.a.test" => {"default"=>{"en"=>"This is a test."}, "count"=>{"en"=>1}}}
+      data = {"this.is.a.test" => {"en"=>{"default"=>"This is a test.", "count"=>1}}}
       expect { project.handle_missed! :json => data.to_json }.to change(Token, :count).by(4)
     end
 
@@ -66,12 +72,6 @@ describe Project do
       tokens.last.update_or_create_all_translations
       expected = {'en' => {}}
       project.aggregated_translations.should eq(expected)
-    end
-
-    it 'should nicly handly json' do
-      json = "{\"share\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.next\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.play\":{\"count\":{\"pt\":1,\"en\":1}},\"nested_profiles.profiles.about.about\":{\"count\":{\"pt\":1,\"en\":1}},\"layouts.application.header.player.previous\":{\"count\":{\"pt\":1,\"en\":1}}}"
-      # TODO should not throw an error
-      project.handle_missed!(:json => json)
     end
 
     #pending "should provide a list of remaining locales" do
@@ -121,5 +121,12 @@ this.is.another.test,"This is a mean test, it contains a \"\".","Dies ist ein an
       expect { project.send(:perform_reset_counters!) }.should_not raise_error
       project.translations.map(&:miss_counter).uniq.should eq([0])
     end
+
+    it 'should nicely normalize attributes' do
+      attrs = {"de"=>{"default"=>"Do not remind"}}
+      expected = {'de'=>{'content'=>'Do not remind'},'en'=>{}}
+      project.normalize_attributes(attrs).should eq(expected)
+    end
+
   end
 end

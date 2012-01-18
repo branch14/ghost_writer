@@ -43,3 +43,5 @@ module ProjectZero
     config.assets.enabled = true
   end
 end
+
+FileUtils.mkdir_p(File.join(Rails.root, 'public', 'system', 'reports'))

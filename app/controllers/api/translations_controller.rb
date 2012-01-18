@@ -54,22 +54,22 @@ class Api::TranslationsController < ApplicationController
   # Reporting request
   # e.g. POST http://0.0.0.0:3000/api/91885ca9ec4feb9b2ed2423cdbdeda32/translations.json
   def create
-    project_proxy = @project.delay
-    project_proxy = @project if Rails.env.development? and !dj_running?
     if params[:data] and params[:data].size > 2 # empty is '{}'
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:data] }
-      project_proxy.handle_missed!(:filename => filename)
-      # Delayed::Job.enqueue HandleMissedJob.new(@project, filename)
+      job = HandleMissedJob.new(@project, filename)
+      Delayed::Job.enqueue job
+      # handle synchronous if in development and dj not running
+      Delayed::Worker.new.run(job) if Rails.env.development? and !dj_running?
     end
     redirect_to api_translations_url(:api_key => @project.api_key)
   end
-
-  # class HandleMissedJob < Struct.new(:project, :filename)
-  #   def perform
-  #     project.handle_missed!(:filename => filename)
-  #   end
-  # end
+  
+  class HandleMissedJob < Struct.new(:project, :filename)
+    def perform
+      project.handle_missed!(:filename => filename)
+    end
+  end
 
   private
 

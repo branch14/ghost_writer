@@ -100,9 +100,10 @@ class Project < ActiveRecord::Base
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
     raise "no data supplied" if options[:data].blank?
     options[:data].each do |key, val|
-      logger.info "Data: #{key} => #{val.inspect}"
+      logger.debug "Data: #{key} => #{val.inspect}"
       token = find_or_create_tokens(key).last
-      token.update_or_create_all_translations(normalize_attributes(val))
+      attrs = normalize_attributes(val)
+      token.update_or_create_all_translations(attrs)
     end
     if options.has_key?(:filename)
       logger.info "Removing file #{options[:filename]}"
@@ -110,13 +111,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # takes {"de"=>{"default"=>"Do not remind"}}
+  # returns {'de'+>{'content'=>'Do not remind'},'en'=>{}}
   def normalize_attributes(attrs)
     locales.map(&:code).inject({}) do |result, code|
       result.tap do |provis|
         provis[code] = {}
         GHOSTREADER_MAPPING.each do |key, value|
-          if attrs[key.to_s] && !attrs[key.to_s][code].blank?
-            provis[code][value.to_s] = attrs[key.to_s][code]
+          if attrs[code] && !attrs[code][key.to_s].blank?
+            provis[code][value.to_s] = attrs[code][key.to_s]
           end
         end
       end
