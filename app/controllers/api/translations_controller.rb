@@ -20,7 +20,7 @@ class Api::TranslationsController < ApplicationController
     data, last_modified = nil, nil
 
     if timestamp.blank? # sent all translations (Initial request)
-      logger.fatal "NO TIMESTAMP"
+      logger.debug "NO TIMESTAMP"
       if cache = false && Rails.cache.read(permalink) # temporarily deactivated
         data = cache[:data]
         last_modified = cache[:timestamp]
@@ -33,7 +33,7 @@ class Api::TranslationsController < ApplicationController
                           })
       end
     else # only send updated translations (Incremental request)
-      logger.fatal "TIMESTAMP: #{timestamp}"
+      logger.debug "TIMESTAMP: #{timestamp}"
       tokens = @project.tokens.changed_after(timestamp)
       data = tokens.inject({}) do |result, token|
         result.deep_merge token.translations_as_nested_hash
@@ -41,11 +41,12 @@ class Api::TranslationsController < ApplicationController
       last_modified = tokens.empty? ? timestamp : Time.now
     end
 
-    logger.fatal "LAST-MODIFIED: #{last_modified}"
+    logger.debug "LAST-MODIFIED: #{last_modified}"
     response.last_modified = last_modified
-    # render :json => data
-    send_data(data.to_json,
-              :type => 'application/json',
+
+    json = data.to_json
+    logger.info "Sending: #{json}"
+    send_data(json, :type => 'application/json',
               :filename => "translations_#{permalink}.json")
 
     # TODO http://apidock.com/rails/ActionController/Streaming
