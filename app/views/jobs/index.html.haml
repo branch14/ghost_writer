@@ -19,8 +19,8 @@
       %td=job.id
       %td=job.priority
       %td=job.attempts
-      %td=job.payload_object.try(:object).try(:title)
-      -file = File.basename(job.payload_object.args.first[:filename])
+      %td=job.payload_object.project.title
+      -file = File.basename(job.payload_object.filename)
       %td=link_to file, "/system/reports/#{file}"
       %td=truncate(job.last_error.gsub('\n', "\n")) if job.last_error
       %td=job.run_at
