@@ -16,7 +16,7 @@ class Api::TranslationsController < ApplicationController
   #
   def index
     permalink = @project.permalink
-    timestamp = request.if_modified_since
+    timestamp = request.if_modified_since.to_utc
     data, last_modified = nil, nil
 
     if timestamp.blank? # sent all translations (Initial request)
@@ -26,7 +26,7 @@ class Api::TranslationsController < ApplicationController
         last_modified = cache[:timestamp]
       else
         data = @project.aggregated_translations
-        last_modified = Time.now
+        last_modified = Time.now.to_utc
         Rails.cache.write(permalink, {
                             :data => data ,
                             :timestamp => last_modified
@@ -35,6 +35,7 @@ class Api::TranslationsController < ApplicationController
     else # only send updated translations (Incremental request)
       logger.info "Request: Incremental (timestamp: #{timestamp})"
       tokens = @project.tokens.changed_after(timestamp)
+      logger.info "# Tokens: #{tokens.size}"
       data = tokens.inject({}) do |result, token|
         result.deep_merge token.translations_as_nested_hash
       end
