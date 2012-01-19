@@ -16,7 +16,7 @@ class Api::TranslationsController < ApplicationController
   #
   def index
     permalink = @project.permalink
-    timestamp = request.if_modified_since.to_utc
+    timestamp = request.if_modified_since # Time or nil
     data, last_modified = nil, nil
 
     if timestamp.blank? # sent all translations (Initial request)
@@ -26,20 +26,21 @@ class Api::TranslationsController < ApplicationController
         last_modified = cache[:timestamp]
       else
         data = @project.aggregated_translations
-        last_modified = Time.now.to_utc
+        last_modified = Time.now.utc # Time
         Rails.cache.write(permalink, {
                             :data => data ,
                             :timestamp => last_modified
                           })
       end
     else # only send updated translations (Incremental request)
+      timestamp = timestamp.utc
       logger.info "Request: Incremental (timestamp: #{timestamp})"
       tokens = @project.tokens.changed_after(timestamp)
       logger.info "# Tokens: #{tokens.size}"
       data = tokens.inject({}) do |result, token|
         result.deep_merge token.translations_as_nested_hash
       end
-      last_modified = tokens.empty? ? timestamp : Time.now
+      last_modified = tokens.empty? ? timestamp : Time.now.utc
     end
 
     response.last_modified = last_modified
@@ -59,8 +60,7 @@ class Api::TranslationsController < ApplicationController
     if params[:data] and params[:data].size > 2 # empty is '{}'
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:data] }
-      job = HandleMissedJob.new(@project, filename)
-      Delayed::Job.enqueue job
+      job = Delayed::Job.enqueue(HandleMissedJob.new(@project, filename))
       # handle synchronous if in development and dj not running
       Delayed::Worker.new.run(job) if Rails.env.development? and !dj_running?
     end
