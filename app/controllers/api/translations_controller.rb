@@ -20,7 +20,7 @@ class Api::TranslationsController < ApplicationController
     data, last_modified = nil, nil
 
     if timestamp.blank? # sent all translations (Initial request)
-      logger.debug "NO TIMESTAMP"
+      logger.info "Request: Initial (no timestamp)"
       if cache = false && Rails.cache.read(permalink) # temporarily deactivated
         data = cache[:data]
         last_modified = cache[:timestamp]
@@ -33,7 +33,7 @@ class Api::TranslationsController < ApplicationController
                           })
       end
     else # only send updated translations (Incremental request)
-      logger.debug "TIMESTAMP: #{timestamp}"
+      logger.info "Request: Incremental (timestamp: #{timestamp})"
       tokens = @project.tokens.changed_after(timestamp)
       data = tokens.inject({}) do |result, token|
         result.deep_merge token.translations_as_nested_hash
@@ -41,11 +41,10 @@ class Api::TranslationsController < ApplicationController
       last_modified = tokens.empty? ? timestamp : Time.now
     end
 
-    logger.debug "LAST-MODIFIED: #{last_modified}"
     response.last_modified = last_modified
-
     json = data.to_json
-    logger.info "Sending: #{json}"
+    logger.info "Sending: timestamp=#{last_modified} data=#{json}"
+
     send_data(json, :type => 'application/json',
               :filename => "translations_#{permalink}.json")
 
@@ -55,6 +54,7 @@ class Api::TranslationsController < ApplicationController
   # Reporting request
   # e.g. POST http://0.0.0.0:3000/api/91885ca9ec4feb9b2ed2423cdbdeda32/translations.json
   def create
+    logger.info "Request: Reporting"
     if params[:data] and params[:data].size > 2 # empty is '{}'
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:data] }
