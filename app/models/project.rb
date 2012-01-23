@@ -137,7 +137,7 @@ class Project < ActiveRecord::Base
   end
 
   def static_file_time
-    File.mtime(static_file_path)
+    File.mtime(static_file_path) if File.exist?(static_file_path)
   end
 
   private
