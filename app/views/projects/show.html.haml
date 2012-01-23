@@ -27,6 +27,11 @@
 %ul
   %li=link_to t('.export_csv'), project_path(@project, :format => 'csv')
   %li=link_to t('.export_yaml'), project_path(@project, :format => 'yaml')
+  %li
+    =form_for @project do |pf|
+      =hidden_field_tag 'project[save_static]', '1'
+      =pf.submit t('.save_static'), :confirm => t('are_you_sure')
+      =t('save_static_info', :time => @project.static_file_time)
 
 %h2=t('.snapshots')
 %table
@@ -83,3 +88,7 @@
 %h2=t('.api_key')
 %ul
   %li=@project.api_key
+  -url = api_translations_url(@project.api_key, :yml)
+  %li=link_to url, url
+  -url = api_translations_url(@project.api_key, :json)
+  %li=link_to url, url

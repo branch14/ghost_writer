@@ -44,4 +44,5 @@ module ProjectZero
   end
 end
 
-FileUtils.mkdir_p(File.join(Rails.root, 'public', 'system', 'reports'))
+REPORT_PATH = FileUtils.mkdir_p(File.join(Rails.root, 'public', 'system', 'reports'))
+STATIC_PATH = FileUtils.mkdir_p(File.join(Rails.root, 'public', 'system', 'static'))

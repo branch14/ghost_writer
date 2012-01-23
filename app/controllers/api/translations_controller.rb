@@ -44,12 +44,16 @@ class Api::TranslationsController < ApplicationController
     end
 
     response.last_modified = last_modified
-    json = data.to_json
-    logger.info "Sending: timestamp=#{last_modified} data=#{json}"
+    logger.info "Sending: timestamp=#{last_modified} data=#{data.inspect}"
 
-    send_data(json, :type => 'application/json',
-              :filename => "translations_#{permalink}.json")
-
+    case params[:format]
+      when nil, 'json'
+      send_data(data.to_json, :type => 'application/json',
+                :filename => "translations_#{permalink}.json")
+      when 'yml'
+      send_data(data.to_yaml, :type => 'application/yaml',
+                :filename => "translations_#{permalink}.yml")
+    end
     # TODO http://apidock.com/rails/ActionController/Streaming
   end
 

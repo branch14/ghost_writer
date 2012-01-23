@@ -8,9 +8,10 @@ class Project < ActiveRecord::Base
   }
 
   attr_accessor :reset_translations, :reset_counters, :missings_in_json,
-                :new_user_email
+                :new_user_email, :save_static
   attr_accessible :title, :permalink, :locales_attributes,
-                  :reset_translations, :reset_counters, :new_user_email
+                  :reset_translations, :reset_counters, :new_user_email,
+                  :save_static
 
   has_many :tokens
   has_many :locales
@@ -28,6 +29,7 @@ class Project < ActiveRecord::Base
 
   after_update :perform_reset_translations!, :if => :reset_translations
   after_update :perform_reset_counters!, :if => :reset_counters
+  after_update :do_save_static, :if => :save_static
 
   before_save :set_api_key, :unless => :api_key?
   before_save :add_user, :if => :new_user_email
@@ -130,6 +132,14 @@ class Project < ActiveRecord::Base
     Rails.cache.write(permalink, nil)
   end
 
+  def static_file_path
+    File.join(STATIC_PATH, "#{api_key}.yml")
+  end
+
+  def static_file_time
+    File.mtime(static_file_path)
+  end
+
   private
 
   def strip_down(tree, locale)
@@ -167,6 +177,10 @@ class Project < ActiveRecord::Base
   def add_user
     user = User.find_by_email(new_user_email)
     users << user unless user.nil?
+  end
+
+  def do_save_static
+    File.new(static_file_path, 'w') { f.puts to_yaml_for_export  }
   end
 
 end

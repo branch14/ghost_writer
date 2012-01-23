@@ -22,6 +22,7 @@ en:
       lastlog: Last %{count} Changes
       add_user: Add user
       api_key: Api key
+      save_static: Deploy to Live
     index:
       title: Title
 
@@ -39,6 +40,7 @@ en:
 
   reset_counters_warning: All 'hits' and 'missed' counters will be set to zero.
   reset_translations_warning: Locales and snapshots will be kept everthing else will vanish.
+  save_static_info: "Last deploy: %{time}"
   are_you_sure: Are you absolutely sure about that?
   edit_project: Edit project
   delete: delete
@@ -49,3 +51,5 @@ en:
         sure: Delete "%{key}"?
     show:
       add_locale: Add locale
+
+  
