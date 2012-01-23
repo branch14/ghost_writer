@@ -180,7 +180,7 @@ class Project < ActiveRecord::Base
   end
 
   def do_save_static
-    File.new(static_file_path, 'w') { f.puts to_yaml_for_export  }
+    File.open(static_file_path, 'w') { |f| f.puts to_yaml_for_export  }
   end
 
 end
