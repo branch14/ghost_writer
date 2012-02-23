@@ -3,6 +3,8 @@ require 'digest'
 
 class Token < ActiveRecord::Base
 
+  KEY_PATTERN = /\A[\w-]+\z/
+
   def self.changed_after(time)
     time = DateTime.parse(time) if time.is_a?(String)
     time = time.to_formatted_s(:db)
@@ -17,7 +19,7 @@ class Token < ActiveRecord::Base
   has_ancestry :cache_depth => true
   
   validates :project, :presence => true
-  validates :key, :presence => true, :format => { :with => /\A[\w-]+\z/ }
+  validates :key, :presence => true, :format => { :with => KEY_PATTERN }
 
   before_save :set_full_key
 

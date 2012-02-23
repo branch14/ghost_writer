@@ -74,6 +74,10 @@ class Project < ActiveRecord::Base
   def find_or_create_tokens(full_key)
     parent = tokens
     keys = full_key.split '.'
+    if keys.reject { |k| k.match(Token::KEY_PATTERN) }.any?
+      logger.error "Invalid key '#{full_key}' ignored."
+      return nil
+    end
     Array.new.tap do |tokens|
       keys.each_with_index do |key, index|
         token = parent.at_depth(index).where(:key => key).first
@@ -102,10 +106,13 @@ class Project < ActiveRecord::Base
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)  
     raise "no data supplied" if options[:data].blank?
     options[:data].each do |key, val|
-      logger.debug "Data: #{key} => #{val.inspect}"
-      token = find_or_create_tokens(key).last
-      attrs = normalize_attributes(val)
-      token.update_or_create_all_translations(attrs)
+      logger.info "Data: #{key} => #{val.inspect}"
+      tokens = find_or_create_tokens(key)
+      unless tokens.blank?
+        token = tokens.last
+        attrs = normalize_attributes(val)
+        token.update_or_create_all_translations(attrs)
+      end
     end
     if options.has_key?(:filename)
       logger.info "Removing file #{options[:filename]}"

@@ -74,6 +74,29 @@ describe Project do
       project.aggregated_translations.should eq(expected)
     end
 
+    it 'should store translations for other locales if key already exists' do
+      project.locales.create :code => 'es'
+
+      data = {"this.is.a.test" => {"en"=>{"default"=>"This is a test.", "count"=>1}}}
+      project.handle_missed! :data => data
+
+      data = {"this.is.a.test" => {"es"=>{"default"=>"This test is spanish.", "count"=>1}}}
+      project.handle_missed! :data => data
+
+      hash = project.find_or_create_tokens('this.is.a.test').last.translations_as_nested_hash
+      hash['es']['this']['is']['a']['test'].should == 'This test is spanish.'
+    end
+
+    it 'should gracefully handle failing validations' do
+      data = {
+        "this.is.a.test1" =>  {"en"=>{"default"=>"Valid 1."}},
+        ".this.is.a.test2" => {"en"=>{"default"=>"Invalid by leading dot."}},
+        "this.i s.a.test3" => {"en"=>{"default"=>"Invalid by space."}},
+        "this.is.a.test4" =>  {"en"=>{"default"=>"Valid 2."}}
+      }
+      project.handle_missed! :data => data
+    end
+
     #pending "should provide a list of remaining locales" do
     #end
 
