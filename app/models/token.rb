@@ -68,6 +68,7 @@ class Token < ActiveRecord::Base
 
   # returns a translation
   def translation_for(locale)
+    locale = project.locales.find_by_code(locale) unless locale.is_a?(Locale)
     translations.where(:locale_id => locale.id).first
   end
 

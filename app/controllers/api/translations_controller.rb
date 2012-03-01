@@ -44,7 +44,7 @@ class Api::TranslationsController < ApplicationController
     end
 
     response.last_modified = last_modified
-    logger.info "Sending: timestamp=#{last_modified} data=#{data.inspect}"
+    #logger.info "Sending: timestamp=#{last_modified} data=#{data.inspect}"
 
     case params[:format]
       when nil, 'json'
@@ -60,8 +60,11 @@ class Api::TranslationsController < ApplicationController
   # Reporting request
   # e.g. POST http://0.0.0.0:3000/api/91885ca9ec4feb9b2ed2423cdbdeda32/translations.json
   def create
+    # fork to import if structure is native
+    return import if params[:structure] == 'native'
     logger.info "Request: Reporting"
     if params[:data] and params[:data].size > 2 # empty is '{}'
+      logger.info "with #{params[:data].size} bytes of data"
       filename = next_filename
       File.open(filename, 'w') { |f| f.puts params[:data] }
       job = Delayed::Job.enqueue(HandleMissedJob.new(@project, filename))
@@ -71,20 +74,37 @@ class Api::TranslationsController < ApplicationController
     redirect_to api_translations_url(:api_key => @project.api_key)
   end
   
+  def import
+    @import = true # for test
+    logger.info "Request: Reporting (with #{params[:data].size} bytes of data)"
+    filename = next_filename('import')
+    File.open(filename, 'w') { |f| f.puts params[:data] }
+    job = Delayed::Job.enqueue(HandleImportJob.new(@project, filename))
+    # handle synchronous if in development and dj not running
+    Delayed::Worker.new.run(job) if Rails.env.development? and !dj_running?
+    redirect_to api_translations_url(:api_key => @project.api_key)
+  end
+
   class HandleMissedJob < Struct.new(:project, :filename)
     def perform
       project.handle_missed!(:filename => filename)
     end
   end
 
+  class HandleImportJob < Struct.new(:project, :filename)
+    def perform
+      project.handle_import!(:filename => filename)
+    end
+  end
+
   private
 
-  def next_filename
+  def next_filename(prefix='report')
     filename, counter = nil, 0
     while filename.nil? or File.exist?(filename)
       counter += 1
       filename = File.join(Rails.root, 'public', 'system', 'reports',
-                           "#{@project.permalink}_%06d.json" % counter)
+                           "#{@project.permalink}_#{prefix}_%06d.json" % counter)
     end
     filename
   end

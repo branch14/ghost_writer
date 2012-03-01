@@ -38,6 +38,14 @@ describe Project do
       expect { project.handle_missed!(:data => data) }.to change(Token, :count).by(4)
     end
 
+    it 'should handle import' do
+      # native structure
+      data = {'en' => {'this' => {'is' => {'a' => 'Test', 'another' => 'case'}}}}
+      project.handle_import!(:data => data)
+      project.tokens.count.should == 4
+      project.tokens.find_by_key('another').translation_for('en').content.should == 'case'
+    end
+
     it 'should properly build aggregated translations' do
       data = {"this.is.a.test" => {"en"=>{"default"=>"This is a test.", "count"=>1}}}
       expected = {"en" => {"this" => {"is" => {"a" => {"test" => "This is a test."}}}}}

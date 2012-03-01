@@ -73,9 +73,9 @@ class Project < ActiveRecord::Base
   # returns the found or created tokens, the leaf is last
   def find_or_create_tokens(full_key)
     parent = tokens
-    keys = full_key.split '.'
+    keys = full_key.is_a?(String) ? full_key.split('.') : full_key
     if keys.reject { |k| k.match(Token::KEY_PATTERN) }.any?
-      logger.error "Invalid key '#{full_key}' ignored."
+      logger.error "Invalid key #{full_key.inspect} ignored."
       return nil
     end
     Array.new.tap do |tokens|
@@ -117,6 +117,29 @@ class Project < ActiveRecord::Base
     if options.has_key?(:filename)
       logger.info "Removing file #{options[:filename]}"
       File.delete(options[:filename]) 
+    end
+  end
+
+  def handle_import!(options = {})
+    options[:json] = File.open(options[:filename], 'r').read if options.has_key?(:filename)
+    options[:json] = missings_in_json unless missings_in_json.nil?
+    options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)
+    raise "no data supplied" if options[:data].blank?
+    # for all locales
+    locales.each { |locale| import_tree(options[:data][locale.code], locale) }
+  end
+
+  def import_tree(value, locale, prefix=[])
+    case value
+    when String
+      token = find_or_create_tokens(prefix).last
+      token.update_or_create_all_translations
+      translation = token.translation_for(locale)
+      translation.update_attribute(:content, value) unless translation.active?
+    when Hash
+      value.each do |key, val|
+        import_tree(val, locale, prefix + [key])
+      end
     end
   end
 
