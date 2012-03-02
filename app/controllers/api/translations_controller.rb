@@ -1,3 +1,5 @@
+require "base64"
+
 class Api::TranslationsController < ApplicationController
 
   skip_before_filter :authenticate_user!
@@ -77,8 +79,15 @@ class Api::TranslationsController < ApplicationController
   def import
     @import = true # for test
     logger.info "Request: Reporting (with #{params[:data].size} bytes of data)"
-    filename = next_filename('import')
-    File.open(filename, 'w') { |f| f.puts params[:data] }
+    data = Base64.decode64(params[:data])
+
+    json = JSON.parse(data)
+    leaves = number_of_leaves(json)
+    keys = json.keys.size
+    logger.info "number of keys: #{keys}, number of leaves: #{leaves}"
+
+    filename = next_filename("import_k#{keys}_l#{leaves}")
+    File.open(filename, 'w') { |f| f.puts data }
     job = Delayed::Job.enqueue(HandleImportJob.new(@project, filename))
     # handle synchronous if in development and dj not running
     Delayed::Worker.new.run(job) if Rails.env.development? and !dj_running?
@@ -98,6 +107,13 @@ class Api::TranslationsController < ApplicationController
   end
 
   private
+
+  def number_of_leaves(nested_hash)
+    return 1 unless nested_hash.is_a?(Hash)
+    nested_hash.inject(0) do |result, key_val|
+      result + number_of_leaves(key_val.last)
+    end
+  end
 
   def next_filename(prefix='report')
     filename, counter = nil, 0

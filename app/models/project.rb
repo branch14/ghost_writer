@@ -126,10 +126,19 @@ class Project < ActiveRecord::Base
     options[:data] = JSON.parse(options[:json]) if options.has_key?(:json)
     raise "no data supplied" if options[:data].blank?
     # for all locales
-    locales.each { |locale| import_tree(options[:data][locale.code], locale) }
+    locales.each do |locale|
+      data = options[:data][locale.code]
+      logger.debug "processing #{data.inspect}"
+      import_tree(data, locale)
+    end
+    #if options.has_key?(:filename)
+    #  logger.info "Removing file #{options[:filename]}"
+    #  File.delete(options[:filename]) 
+    #end
   end
 
   def import_tree(value, locale, prefix=[])
+    #logger.debug "import_tree: #{value.inspect}"
     case value
     when String
       token = find_or_create_tokens(prefix).last
