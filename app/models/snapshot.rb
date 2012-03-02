@@ -7,7 +7,7 @@ class Snapshot < Document
   def take_snapshot!
     filename = attachable.new_snapshot_name
     File.open(filename, 'w') do |f| 
-      f.puts attachable.aggregated_translations.to_yaml
+      f.puts attachable.aggregated_translations.ya2yaml(:syck_compatible => true)
     end
     puts snapshot = File.new(filename)
     self.attachment = snapshot

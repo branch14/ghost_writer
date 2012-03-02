@@ -26,6 +26,7 @@ gem 'pg'
 gem 'ancestry'
 gem 'jquery-rails'
 gem 'cancan'
+gem 'ya2yaml'
 
 # see https://github.com/rails/rails/issues/3053
 gem 'rack-cache', '>= 1.1'

@@ -61,7 +61,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_yaml_for_export
-    aggregated_translations.to_yaml
+    aggregated_translations.ya2yaml(:syck_compatible => true)
   end
 
   def new_snapshot_name

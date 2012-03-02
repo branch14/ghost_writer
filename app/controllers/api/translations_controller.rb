@@ -53,7 +53,7 @@ class Api::TranslationsController < ApplicationController
       send_data(data.to_json, :type => 'application/json',
                 :filename => "translations_#{permalink}.json")
       when 'yml'
-      send_data(data.to_yaml, :type => 'application/yaml',
+      send_data(data.ya2yaml(:syck_compatible => true), :type => 'application/yaml',
                 :filename => "translations_#{permalink}.yml")
     end
     # TODO http://apidock.com/rails/ActionController/Streaming

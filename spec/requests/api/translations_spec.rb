@@ -46,13 +46,13 @@ describe "Translations" do
       response.status.should be(302) # redirect
     end
 
-    it "should fork to import when structure is native" do
-      data = {'this' => {'is' => {'a' => 'test'}}}
-      post api_translations_path(:api_key => project.api_key, :data => data.to_json,
-                                 :structure => 'native')
-      assigns(:import).should be_true
-      response.status.should be(302)
-    end
+    # it "should fork to import when structure is native" do
+    #   data = {'this' => {'is' => {'a' => 'test'}}}
+    #   post api_translations_path(:api_key => project.api_key, :data => data.to_json,
+    #                              :structure => 'native')
+    #   assigns(:import).should be_true
+    #   response.status.should be(302)
+    # end
   end
 
 end
