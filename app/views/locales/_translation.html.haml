@@ -1,8 +1,8 @@
 - id = "translation-#{translation.id}" 
 %li.translation{ :id => id, :class => "#{translation.active? ? 'active' : 'inactive'}" }
   .token
-    %span.counter=translation.miss_counter
-    &mdash;
+    -#%span.counter=translation.miss_counter
+    -#&mdash;
     %span.key=translation.full_key
     -# .tags
     -#   -if translation.tags.size > 0
@@ -13,8 +13,8 @@
     -#     %i=t(:no_tags)
     -#   =text_field_tag "#{id}-tags", translation.tag_list, :class => 'hidden'
     -#   %span.edit=link_to_function t(:edit), "editTagList('#{id}')"
-    &mdash;
-    %span.actions
+    -#&mdash;
+    -#%span.actions
       -#!=link_to t(:edit), edit_project_token_path(@project, translation.token)
       -#!=link_to t(:delete), project_token_path(@project, translation.token), :method => 'delete', :confirm => t('.delete.sure', :key => translation.full_key)
   .content=best_in_place translation, :content   

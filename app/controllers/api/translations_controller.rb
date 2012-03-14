@@ -80,7 +80,7 @@ class Api::TranslationsController < ApplicationController
     @import = true # for test
     logger.info "Request: Reporting (with #{params[:data].size} bytes of data)"
     data = Base64.decode64(params[:data])
-
+    
     json = JSON.parse(data)
     leaves = number_of_leaves(json)
     keys = json.keys.size
@@ -92,6 +92,10 @@ class Api::TranslationsController < ApplicationController
     # handle synchronous if in development and dj not running
     Delayed::Worker.new.run(job) if Rails.env.development? and !dj_running?
     redirect_to api_translations_url(:api_key => @project.api_key)
+
+  rescue JSON::ParseError => e
+    File.open(next_filename('evil'), 'w') { |f| f.puts data }
+    raise e
   end
 
   class HandleMissedJob < Struct.new(:project, :filename)

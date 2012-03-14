@@ -128,8 +128,11 @@ class Project < ActiveRecord::Base
     # for all locales
     locales.each do |locale|
       data = options[:data][locale.code]
-      logger.debug "processing #{data.inspect}"
-      import_tree(data, locale)
+      unless data.nil?
+        #Slogger.info "# processing #{data.inspect}"
+        stats = import_tree(data, locale)
+        Slogger.info "# final stats #{stats.inspect}, sum: #{stats.values.sum}"
+      end
     end
     #if options.has_key?(:filename)
     #  logger.info "Removing file #{options[:filename]}"
@@ -138,16 +141,35 @@ class Project < ActiveRecord::Base
   end
 
   def import_tree(value, locale, prefix=[])
-    #logger.debug "import_tree: #{value.inspect}"
+    stats = Hash.new { |h, k| h[k] = 0 }  
+    stats[value.class.name] += 1
     case value
-    when String
-      token = find_or_create_tokens(prefix).last
-      token.update_or_create_all_translations
-      translation = token.translation_for(locale)
-      translation.update_attribute(:content, value) unless translation.active?
     when Hash
       value.each do |key, val|
-        import_tree(val, locale, prefix + [key])
+        substats = import_tree(val, locale, prefix + [key])
+        stats = substats.inject(stats) { |r, a| r[a[0]] += a[1]; r }
+      end
+    when String, NilClass
+      make_entry(locale, prefix, value)
+    else
+      make_entry(locale, prefix, value.ya2yaml)
+    end
+    return stats
+  end
+
+  def make_entry(locale, prefix, value)
+    #Slogger.info "token = Project.find(#{id}).find_or_create_tokens(#{prefix.inspect}).last"
+    token = find_or_create_tokens(prefix).last
+    Slogger.info "#{locale.code}.#{prefix.inspect} => #{token.inspect}"
+    token.update_or_create_all_translations
+    if value.is_a?(String)
+      #Slogger.info "translation = token.translation_for(#{locale.code.inspect})"
+      translation = token.translation_for(locale)
+      unless translation.active?
+        #Slogger.info "translation.update_attribute(:content, #{value.inspect})"
+        translation.update_attribute(:content, value)
+      else
+        #Slogger.info "# translation is active"
       end
     end
   end
