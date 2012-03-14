@@ -42,8 +42,8 @@ class Project < ActiveRecord::Base
   def aggregated_translations(options={})
     options = { :locales => options } unless options.is_a?(Hash)
     options[:locales] ||= self.locales
-    options[:locales].inject({}) do |result, locale|
-      tree = tokens.roots.inject({}) do |provis, root|
+    options[:locales].inject(ActiveSupport::OrderedHash.new) do |result, locale|
+      tree = tokens.roots.inject(ActiveSupport::OrderedHash.new) do |provis, root|
         provis.merge strip_down(root.subtree.arrange, locale)
       end
       result.merge locale.code => tree
